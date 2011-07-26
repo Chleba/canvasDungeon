@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="shortcut icon" href="/img/favicon.ico" />
+		<link rel="icon" href="/img/favicon.ico" />
+		<title>canvas tower defense</title>
+		<link rel="stylesheet" href="./style.css" type="text/css" />
+	</head>
+	<body>
+	    <script type="text/javascript" src="./jak.js"></script>
+	    <script type="text/javascript" src="./interpolator.js"></script>
+	    <script type="text/javascript" src="./timekeeper.js"></script>
+	    <script type="text/javascript" src="./dungeon.js"></script>
+		<style>
+			#canvasMain 	{ position:relative; }
+			#canvasMain canvas	{ display:block; position:absolute; top:0px; left:0px; }
+		</style>
+		<div id="page">
+			
+			<div id="canvasMain">
+				<canvas id="canvasMap" width="400" height="400"></canvas>
+			</div>
+			
+			<script>
+				var canvasDungeon = new CanvasDungeon('canvasMap');
+			</script>
+			
+		</div>
+	</body>
+</html>
