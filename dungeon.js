@@ -1,7 +1,7 @@
 
 CanvasDungeon = JAK.ClassMaker.makeClass({
 	NAME : 'CanvasDungeon',
-	VERSION : '1.0'
+	VERSION : '1.1'
 });
 CanvasDungeon.prototype.$constructor = function(map){
 	this.mapConst = 50;
@@ -30,7 +30,7 @@ CanvasDungeon.prototype._buildMap = function(){
 				this.canvasMap.fillStyle = '#a30000';
 			} else {
 				row.push('none');
-				this.canvasMap.fillStyle = '#000';
+				this.canvasMap.fillStyle = '#272727';
 			}
 			this.canvasMap.fillRect(this.pointW*i, this.pointH*j, this.pointW, this.pointH);
 		}
@@ -39,15 +39,12 @@ CanvasDungeon.prototype._buildMap = function(){
 	this._placeStart();
 	this._placeEnd();
 };
-CanvasDungeon.prototype._isOnRange = function(pos){
-	var np = [pos[0]*this.pointW, pos[1]*this.pointH];
-	this.canvasMap.strokeStyle = '#000';
-	this.canvasMap.beginPath();
-	this.canvasMap.arc(this.start[0]*this.pointW, this.start[1]*this.pointH, this.pointW*2.5, 0, Math.PI*2, true);
-	this.canvasMap.closePath();
-	this.canvasMap.stroke();
-	var isIn = this.canvasMap.isPointInPath(np[0], np[1]);
-	return isIn;
+CanvasDungeon.prototype._isOnRange = function(pos){	
+	var a = Math.sqrt((Math.pow((this.start[0]-pos[0]), 2) + Math.pow((this.start[1]-pos[1]), 2)));
+	if(a < 5.2){
+		return 1;
+	}
+	return 0;
 };
 CanvasDungeon.prototype._rebuildMap = function(){
 	for(var i=0;i<this.MAP.length;i++){
@@ -55,7 +52,7 @@ CanvasDungeon.prototype._rebuildMap = function(){
 			var color = '#000';
 			switch(this.MAP[i][j]){
 				case 'lava' : color = '#a30000'; break;
-				case 'none' : color = '#000'; break;
+				case 'none' : color = '#272727'; break;
 				case 'start' : color = '#fff'; break;
 				case 'end' : color = '#0000cc'; break;
 				default : JAK.Events.cancelDef(e); return; break;
