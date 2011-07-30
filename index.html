@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<link rel="shortcut icon" href="/img/favicon.ico" />
 		<link rel="icon" href="/img/favicon.ico" />
-		<title>canvas tower defense</title>
+		<title>canvas dungeon</title>
 		<link rel="stylesheet" href="./style.css" type="text/css" />
 	</head>
 	<body>
@@ -13,14 +13,16 @@
 	    <script type="text/javascript" src="./timekeeper.js"></script>
 	    <script type="text/javascript" src="./dungeon.js"></script>
 		<style>
-			#canvasMain 	{ position:relative; }
+			#canvasMain 	{ position:relative; height:450px; }
 			#canvasMain canvas	{ display:block; position:absolute; top:0px; left:0px; }
 		</style>
 		<div id="page">
 			
 			<div id="canvasMain">
-				<canvas id="canvasMap" width="400" height="400"></canvas>
+				<canvas id="canvasMap" width="600" height="600"></canvas>
 			</div>
+			<h2>Where is the blue dot ?</h2>
+			<p>(Move with arrows.)</p>
 			
 			<script>
 				var canvasDungeon = new CanvasDungeon('canvasMap');
