@@ -48,7 +48,6 @@ CanvasDungeon.prototype._visibleCoords = function(blocks, startArc, arcsPerCell,
 	var eps = 1e-4;
 	var startIndex = Math.floor(startArc);
 	var arcCount = arcs.length;
-	
 	var ptr = startIndex;
 	var given = 0; /* amount already distributed */
 	var amount = 0;
@@ -59,10 +58,8 @@ CanvasDungeon.prototype._visibleCoords = function(blocks, startArc, arcsPerCell,
 		if (index < 0) { index += arcCount; }
 		if (index >= arcCount) { index -= arcCount; }
 		arc = arcs[index];
-		
 		/* is this arc is already totally obstructed? */
 		var chance = (arc[0] + arc[1] + eps < 1);
-
 		if (ptr < startArc) {
 			/* blocks left part of blocker (with right cell part) */
 			amount += ptr + 1 - startArc;
@@ -92,11 +89,9 @@ CanvasDungeon.prototype._visibleCoords = function(blocks, startArc, arcsPerCell,
 				}
 			}
 		}
-		
 		given += amount;
 		ptr++;
 	} while (given < arcsPerCell);
-	
 	return ok;
 };
 
@@ -133,11 +128,8 @@ CanvasDungeon.prototype.getCoordsInCircle = function(center, radius, includeInva
 		c1.push(center[i]);
 	}
 	var c2 = [c1[0]+radius, c1[1]+radius];
-	/*-var c = center.clone().plus(new RPG.Misc.Coords(radius, radius));-*/
 	var c = c2;
-	
 	var dirs = [0, 6, 4, 2];
-	
 	var count = 8*radius;
 	for (var i=0;i<count;i++) {
 		if (c[0] < 0 || c[1] < 0 || c[0] >= W || c[1] >= H) {
@@ -145,10 +137,8 @@ CanvasDungeon.prototype.getCoordsInCircle = function(center, radius, includeInva
 		} else {
 			arr.push(c);
 		}
-		
 		var dir = dirs[Math.floor(i*dirs.length/count)];
 		c = [c[0]+RPG.DIR[dir][0], c[1]+RPG.DIR[dir][1]];
-		/*-c.plus(RPG.DIR[dir]);-*/
 	}
 	return arr;
 };
@@ -159,35 +149,27 @@ CanvasDungeon.prototype._isOnRange = function(pos){
 	var map = this.MAP;
 	var eps = 1e-4;
 	var c = false;
-
 	/* directions blocked */
 	var arcs = [];
-	
 	/* results */
 	var result = [];
 	result.push(this.start);
-
 	/* number of cells in current ring */
 	var cellCount = 0;
-
 	var arcCount = R*8; /* length of longest ring */
 	for (var i=0;i<arcCount;i++) { arcs.push([0, 0]); }
-	
 	/* analyze surrounding cells in concentric rings, starting from the center */
 	for (var r=1; r<=R; r++) {
 		cellCount += 8;
 		var arcsPerCell = arcCount / cellCount; /* number of arcs per cell */
-		
 		var coords = this.getCoordsInCircle(center, r, true);
 		for (var i=0;i<coords.length;i++) {
 			if (!coords[i]) { continue; }
 			c = coords[i];
-
 			var startArc = (i-0.5) * arcsPerCell + 0.5;
 			if (this._visibleCoords(this._blocks(c), startArc, arcsPerCell, arcs)) { 
 				result.push(c);
 			}
-
 			/* cutoff? */
 			var done = true;
 			for (var j=0;j<arcCount;j++) {
@@ -199,17 +181,7 @@ CanvasDungeon.prototype._isOnRange = function(pos){
 			if (done) { return result; }
 		} /* for all cells in this ring */
 	} /* for all rings */
-	
 	return result;
-	
-	
-	/*-
-	var a = Math.sqrt((Math.pow((this.start[0]-pos[0]), 2) + Math.pow((this.start[1]-pos[1]), 2)));
-	if(a < 5.2){
-		return 1;
-	}
-	return 0;
-	-*/
 };
 CanvasDungeon.prototype._blocks = function(c){
 	if(this.MAP[c[0]][c[1]] == 'lava'){
