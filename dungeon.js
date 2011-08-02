@@ -260,8 +260,8 @@ CanvasDungeon.prototype._placeEnd = function(){
 };
 CanvasDungeon.prototype._finder = function(ns){
 	switch(this.MAP[ns[0]][ns[1]]){
-		case 'none' : return; break;
-		case 'lava' : this._end(); break;
+		case 'none' : return 1; break;
+		case 'lava' : return 0; break;
 		case 'end' : this._win(); break;
 		default : return; break;
 	}
@@ -275,38 +275,46 @@ CanvasDungeon.prototype._win = function(){
 CanvasDungeon.prototype._moveUp = function(e){
 	JAK.Events.cancelDef(e);
 	var ns = [this.start[0], this.start[1]-1];
-	this._finder(ns);
-	this.MAP[this.start[0]][this.start[1]] = 'none';
-	this.start[1] = this.start[1] == 0 ? this.start[1] : this.start[1]-1;
-	this.MAP[this.start[0]][this.start[1]] = 'start';
-	this._rebuildMap();
+	var canI = this._finder(ns);
+	if(canI){
+		this.MAP[this.start[0]][this.start[1]] = 'none';
+		this.start[1] = this.start[1] == 0 ? this.start[1] : this.start[1]-1;
+		this.MAP[this.start[0]][this.start[1]] = 'start';
+		this._rebuildMap();
+	}
 };
 CanvasDungeon.prototype._moveDown = function(e){
 	JAK.Events.cancelDef(e);
 	var ns = [this.start[0], this.start[1]+1];
-	this._finder(ns);
-	this.MAP[this.start[0]][this.start[1]] = 'none';
-	this.start[1] = this.start[1] == this.MAP[0].length-1 ? this.start[1] : this.start[1]+1;
-	this.MAP[this.start[0]][this.start[1]] = 'start';
-	this._rebuildMap();
+	var canI = this._finder(ns);
+	if(canI){
+		this.MAP[this.start[0]][this.start[1]] = 'none';
+		this.start[1] = this.start[1] == this.MAP[0].length-1 ? this.start[1] : this.start[1]+1;
+		this.MAP[this.start[0]][this.start[1]] = 'start';
+		this._rebuildMap();
+	}
 };
 CanvasDungeon.prototype._moveRight = function(e){
 	JAK.Events.cancelDef(e);
 	var ns = [this.start[0]+1, this.start[1]];
-	this._finder(ns);
-	this.MAP[this.start[0]][this.start[1]] = 'none';
-	this.start[0] = this.start[0] == this.MAP.length-1 ? this.start[0] : this.start[0]+1;
-	this.MAP[this.start[0]][this.start[1]] = 'start';
-	this._rebuildMap();
+	var canI = this._finder(ns);
+	if(canI){
+		this.MAP[this.start[0]][this.start[1]] = 'none';
+		this.start[0] = this.start[0] == this.MAP.length-1 ? this.start[0] : this.start[0]+1;
+		this.MAP[this.start[0]][this.start[1]] = 'start';
+		this._rebuildMap();
+	}
 };
 CanvasDungeon.prototype._moveLeft = function(e){
 	JAK.Events.cancelDef(e);
 	var ns = [this.start[0]-1, this.start[1]];
-	this._finder(ns);
-	this.MAP[this.start[0]][this.start[1]] = 'none';
-	this.start[0] = this.start[0] == 0 ? this.start[0] : this.start[0]-1;
-	this.MAP[this.start[0]][this.start[1]] = 'start';
-	this._rebuildMap();
+	var canI = this._finder(ns);
+	if(canI){
+		this.MAP[this.start[0]][this.start[1]] = 'none';
+		this.start[0] = this.start[0] == 0 ? this.start[0] : this.start[0]-1;
+		this.MAP[this.start[0]][this.start[1]] = 'start';
+		this._rebuildMap();
+	}
 };
 CanvasDungeon.prototype._move = function(e, elm){
 	switch(e.keyCode){
