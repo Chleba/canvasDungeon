@@ -29,6 +29,10 @@ CanvasDungeon = JAK.ClassMaker.makeClass({
 	VERSION : '1.1'
 });
 CanvasDungeon.prototype.$constructor = function(map){
+	this.opt = {
+		allMap : 0,
+		radius : 5
+	}
 	this.mapConst = 50;
 	this.dom = {};
 	this.ec = [];
@@ -63,8 +67,16 @@ CanvasDungeon.prototype._buildMap = function(){
 	}
 	this._placeStart();
 	this._placeEnd();
+	/*- jestlize chceme mit viditelnost prez celou hraci plochu -*/
+	if(!this.opt.allMap){
+		this._fullscreen();
+	}
 	this._rebuildMap();
 };
+CanvasDungeon.prototype._fullscreen = function(){
+	this.pointW = this.mapWidth/((this.opt.radius*2)+1);
+	this.pointH = this.mapHeight/((this.opt.radius*2)+1);
+}
 CanvasDungeon.prototype._visibleCoords = function(blocks, startArc, arcsPerCell, arcs) {
 	var eps = 1e-4;
 	var startIndex = Math.floor(startArc);
@@ -124,7 +136,6 @@ CanvasDungeon.prototype.getCoordsInCircle = function(center, radius, includeInva
 		c1.push(center[i]);
 	}
 	var c2 = [c1[0]+radius, c1[1]+radius];
-	/*-var c = center.clone().plus(new RPG.Misc.Coords(radius, radius));-*/
 	var c = c2;
 	var dirs = [0, 6, 4, 2];
 	var count = 8*radius;
@@ -136,12 +147,11 @@ CanvasDungeon.prototype.getCoordsInCircle = function(center, radius, includeInva
 		}
 		var dir = dirs[Math.floor(i*dirs.length/count)];
 		c = [c[0]+RPG.DIR[dir][0], c[1]+RPG.DIR[dir][1]];
-		/*-c.plus(RPG.DIR[dir]);-*/
 	}
 	return arr;
 };
 CanvasDungeon.prototype._isOnRange = function(pos){	
-	var R = 5
+	var R = this.opt.radius;
 	var center = this.start;
 	var map = this.MAP;
 	var eps = 1e-4;
@@ -166,6 +176,8 @@ CanvasDungeon.prototype._isOnRange = function(pos){
 			var startArc = (i-0.5) * arcsPerCell + 0.5;
 			if (this._visibleCoords(this._blocks(c), startArc, arcsPerCell, arcs)) { 
 				result.push(c);
+			} else {
+				result.push(null);
 			}
 			/* cutoff? */
 			var done = true;
@@ -191,22 +203,38 @@ CanvasDungeon.prototype._clearMap = function(){
 	this.canvasMap.fillStyle = '#000';
 	this.canvasMap.fillRect(0, 0, this.mapWidth, this.mapHeight)
 };
+CanvasDungeon.prototype._smallRebuild = function(vis){
+	console.log(vis);
+	vis = vis.reverse();
+	var a = (this.opt.radius*2)+1;
+	for(var i=0;i<a;i++){
+		for(var j=0;j<a;j++){
+			this.canvasMap.fillStyle = '#272727';
+			this.canvasMap.fillRect(this.pointW*j, this.pointH*i, this.pointW, this.pointH);
+		}
+	}
+};
 CanvasDungeon.prototype._rebuildMap = function(){
 	this._clearMap();
-	var a = this._isOnRange();
-	for(var i=0;i<a.length;i++){
-	    var x = a[i][0];
-	    var y = a[i][1];
-	    var color = '#000';
-		switch(this.MAP[x][y]){
-			case 'lava' : color = '#a30000'; break;
-			case 'none' : color = '#272727'; break;
-			case 'start' : color = '#fff'; break;
-			case 'end' : color = '#0000cc'; break;
-			default : JAK.Events.cancelDef(e); return; break;
+	var a = this._isOnRange()
+	if(!this.opt.allMap){
+		this._smallRebuild(a);
+	} else {
+		for(var i=0;i<a.length;i++){
+			var x = a[i][0];
+			var y = a[i][1];
+			
+			var color = '#000';
+			switch(this.MAP[x][y]){
+				case 'lava' : color = '#a30000'; break;
+				case 'none' : color = '#272727'; break;
+				case 'start' : color = '#fff'; break;
+				case 'end' : color = '#0000cc'; break;
+				default : JAK.Events.cancelDef(e); return; break;
+			}
+			this.canvasMap.fillStyle = color;
+			this.canvasMap.fillRect(this.pointW*x, this.pointH*y, this.pointW, this.pointH);
 		}
-		this.canvasMap.fillStyle = color;
-		this.canvasMap.fillRect(this.pointW*x, this.pointH*y, this.pointW, this.pointH);
 	}
 };
 CanvasDungeon.prototype._placeStart = function(){
