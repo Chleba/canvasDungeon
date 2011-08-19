@@ -204,16 +204,40 @@ CanvasDungeon.prototype._clearMap = function(){
 	this.canvasMap.fillRect(0, 0, this.mapWidth, this.mapHeight)
 };
 CanvasDungeon.prototype._smallRebuild = function(vis){
-	console.log(vis);
 	vis = vis.reverse();
 	var a = (this.opt.radius*2)+1;
+	var middle = ((a-1)/2);
+	var countNum = 0;
 	for(var i=0;i<a;i++){
 		for(var j=0;j<a;j++){
-			this.canvasMap.fillStyle = '#272727';
+			var color = this._obsticlesFinder(vis[countNum]);
+			if(i == middle && j == middle){
+				this.canvasMap.fillStyle = '#FFFFFF';
+			} else {
+				this.canvasMap.fillStyle = color;
+			}
 			this.canvasMap.fillRect(this.pointW*j, this.pointH*i, this.pointW, this.pointH);
+			
+			countNum++;
 		}
 	}
 };
+
+CanvasDungeon.prototype._obsticlesFinder = function(coords){
+	if(!coords){ return '#000'; }
+	var x = coords[0];
+	var y = coords[1];
+	var color = '#000';
+	switch(this.MAP[x][y]){
+		case 'lava' : color = '#a30000'; break;
+		case 'none' : color = '#272727'; break;
+		case 'start' : color = '#fff'; break;
+		case 'end' : color = '#0000cc'; break;
+		default : color = '#272727'; break;
+	}
+	return color;
+};
+
 CanvasDungeon.prototype._rebuildMap = function(){
 	this._clearMap();
 	var a = this._isOnRange()
