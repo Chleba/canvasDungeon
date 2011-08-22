@@ -7,8 +7,10 @@
 		<title>canvas dungeon</title>
 	</head>
 	<body>
-	    <script type="text/javascript" src="./jak.js"></script>
-	    <script type="text/javascript" src="./dungeon.js"></script>
+	    <script type="text/javascript" src="./js/jak.js"></script>
+	    <script type="text/javascript" src="./js/dungeon.js"></script>
+	    <script type="text/javascript" src="./js/map.js"></script>
+	    <script type="text/javascript" src="./js/shadowlighting.js"></script>
 		<style>
 			#canvasMain 	{ position:relative; height:450px; }
 			#canvasMain canvas	{ display:block; position:absolute; top:0px; left:0px; }
@@ -22,7 +24,7 @@
 			<p>(Move with arrows.)</p>
 			
 			<script>
-				var canvasDungeon = new CanvasDungeon('canvasMap');
+				var canvasDungeon = new JSDungeon.Dungeon('canvasMap');
 			</script>
 			
 		</div>
