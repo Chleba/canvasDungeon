@@ -119,10 +119,10 @@ JSDungeon.MAP.prototype._smallRebuild = function(vis){
 		}
 	}
 };
+
 JSDungeon.MAP.prototype._rebuildMap = function(){
 	this._clearMap();
 	var a = this.shadows.getResults(this.start);
-	console.log(a);
 	if(!this.opt.allMap){
 		this._smallRebuild(a);
 	} else {

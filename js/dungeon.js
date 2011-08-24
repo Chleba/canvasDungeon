@@ -26,25 +26,6 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 	});
 	this._link();
 };
-JSDungeon.Dungeon.prototype._fullscreen = function(){
-	this.pointW = this.mapWidth/((this.opt.radius*2)+1);
-	this.pointH = this.mapHeight/((this.opt.radius*2)+1);
-};
-
-JSDungeon.Dungeon.prototype._obsticlesFinder = function(coords){
-	if(!coords){ return '#000'; }
-	var x = coords[0];
-	var y = coords[1];
-	var color = '#000';
-	switch(this.MAP[x][y]){
-		case 'lava' : color = '#a30000'; break;
-		case 'none' : color = '#272727'; break;
-		case 'start' : color = '#fff'; break;
-		case 'end' : color = '#0000cc'; break;
-		default : color = '#272727'; break;
-	}
-	return color;
-};
 
 JSDungeon.Dungeon.prototype._finder = function(ns){
 	switch(this.MAP[ns[0]][ns[1]]){
@@ -68,7 +49,7 @@ JSDungeon.Dungeon.prototype._moveUp = function(e){
 		this.MAP[this.start[0]][this.start[1]] = 'none';
 		this.start[1] = this.start[1] == 0 ? this.start[1] : this.start[1]-1;
 		this.MAP[this.start[0]][this.start[1]] = 'start';
-		this._rebuildMap();
+		this.map._rebuildMap();
 	}
 };
 JSDungeon.Dungeon.prototype._moveDown = function(e){
@@ -79,7 +60,7 @@ JSDungeon.Dungeon.prototype._moveDown = function(e){
 		this.MAP[this.start[0]][this.start[1]] = 'none';
 		this.start[1] = this.start[1] == this.MAP[0].length-1 ? this.start[1] : this.start[1]+1;
 		this.MAP[this.start[0]][this.start[1]] = 'start';
-		this._rebuildMap();
+		this.map._rebuildMap();
 	}
 };
 JSDungeon.Dungeon.prototype._moveRight = function(e){
@@ -90,7 +71,7 @@ JSDungeon.Dungeon.prototype._moveRight = function(e){
 		this.MAP[this.start[0]][this.start[1]] = 'none';
 		this.start[0] = this.start[0] == this.MAP.length-1 ? this.start[0] : this.start[0]+1;
 		this.MAP[this.start[0]][this.start[1]] = 'start';
-		this._rebuildMap();
+		this.map._rebuildMap();
 	}
 };
 JSDungeon.Dungeon.prototype._moveLeft = function(e){
@@ -101,7 +82,7 @@ JSDungeon.Dungeon.prototype._moveLeft = function(e){
 		this.MAP[this.start[0]][this.start[1]] = 'none';
 		this.start[0] = this.start[0] == 0 ? this.start[0] : this.start[0]-1;
 		this.MAP[this.start[0]][this.start[1]] = 'start';
-		this._rebuildMap();
+		this.map._rebuildMap();
 	}
 };
 JSDungeon.Dungeon.prototype._move = function(e, elm){

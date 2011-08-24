@@ -24,7 +24,8 @@ RPG.DIR[RPG.CENTER] =  [0, 0];
 
 JSDungeon.ShadowLighting = JAK.ClassMaker.makeClass({
 	VERSION : '1.1',
-	NAME : 'JSDungeon.ShadowLighting'
+	NAME : 'JSDungeon.ShadowLighting',
+	EXTEND : JSDungeon.MAP
 });
 
 JSDungeon.ShadowLighting.prototype.$constructor = function(map, mapConst, radius){
