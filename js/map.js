@@ -19,12 +19,21 @@ JSDungeon.MAP.prototype.$constructor = function(opt){
 	this.dom.map = this.opt.mapElm;
 	this.canvasMap = this.opt.canvas;
 	this.mapConst = this.opt.mapConst;
+	this.radius = this.opt.radius;
 	this._buildMap();
 };
 
 JSDungeon.MAP.prototype._fullscreen = function(){
 	this.pointW = this.mapWidth/((this.opt.radius*2)+1);
 	this.pointH = this.mapHeight/((this.opt.radius*2)+1);
+};
+
+JSDungeon.MAP.prototype.getStart = function(){
+	return this.start;
+};
+
+JSDungeon.MAP.prototype.getMap = function(){
+	return this.MAP;
 };
 
 JSDungeon.MAP.prototype._randRange = function(min, max){
@@ -57,6 +66,7 @@ JSDungeon.MAP.prototype._buildMap = function(){
 		for(var j=0;j<this.mapConst;j++){
 			var rand = Math.random()*10;
 			if(Math.round(rand) == 5){
+			//if(i < 5 && j < 15){
 				row.push('lava');
 				this.canvasMap.fillStyle = '#a30000';
 			} else {
@@ -67,14 +77,10 @@ JSDungeon.MAP.prototype._buildMap = function(){
 		}
 		this.MAP.push(row);
 	}
-	this._placeStart();
-	this._placeEnd();
 	/*- jestlize chceme mit viditelnost prez celou hraci plochu -*/
 	if(!this.opt.allMap){
 		this._fullscreen();
 	}
-	/*- inicializace shadow lighting -*/
-	this.shadows = new JSDungeon.ShadowLighting(this.MAP, this.opt.mapConst, this.opt.radius);
 	this._placeStart();
 	this._placeEnd();
 	this._rebuildMap();
@@ -101,28 +107,81 @@ JSDungeon.MAP.prototype._obsticlesFinder = function(coords){
 	return color;
 };
 
+JSDungeon.MAP.prototype._MALEJ = function(){
+	var a = (this.opt.radius*2)+1;
+	var middle = ((a-1)/2);
+	var x = this.start[1];
+	var y = this.start[0];
+	var xx = x-middle < 0 ? 0 : x-middle;
+	var yy = y-middle < 0 ? 0 : y-middle;
+	return { x : xx, y : yy }
+};
+
+JSDungeon.MAP.prototype._isVisible = function(vis, coords){
+	for(var i=0;i<vis.length;i++){
+		if(vis[i].toString() == coords){
+			return 1;
+			break;
+		}
+	}
+	return 0;
+};
+
 JSDungeon.MAP.prototype._smallRebuild = function(vis){
 	var a = (this.opt.radius*2)+1;
 	var middle = ((a-1)/2);
-	var countNum = 0;
-	for(var i=0;i<a;i++){
-		for(var j=0;j<a;j++){
-			var color = this._obsticlesFinder(vis[countNum]);
-			if(i == middle && j == middle){
-				this.canvasMap.fillStyle = '#FFFFFF';
-			} else {
-				this.canvasMap.fillStyle = color;
-			}
-			this.canvasMap.fillRect(this.pointW*j, this.pointH*i, this.pointW, this.pointH);
+	var startCoors = this._MALEJ();
+	var sx = startCoors.x;
+	var sy = startCoors.y;
+	var ex = (sx+a)+1 > this.mapConst ? this.mapConst : (sx+a)+1;
+	var ey = (sy+a)+1 > this.mapConst ? this.mapConst : (sy+a)+1;
+	var newMap = [];
+	
+	var ay = 0;
+	for(var i=sy;i<ey;i++){
+		var row = [];
+		var ax = 0;
+		for(var j=sx;j<ex;j++){
 			
-			countNum++;
+			var coords = [i,j].toString();
+			var isVisible = this._isVisible(vis, coords);
+			
+			var color = '#000';
+			if(isVisible){
+				switch(this.MAP[i][j]){
+					case 'lava' :
+						row.push('lava');
+						color = '#a30000';
+						break;
+					case 'none' : 
+						row.push('none');
+						color = '#272727';
+						break;
+					case 'start' : 
+						row.push('start');
+						color = '#FFFFFF';
+						break;
+					case 'end' : 
+						row.push('end');
+						color = '#0000cc'; 
+						break;
+					default : 
+						return; 
+						break;
+				}
+			}
+			this.canvasMap.fillStyle = color;
+			this.canvasMap.fillRect(this.pointW*ay, this.pointH*ax, this.pointW, this.pointH);
+			newMap.push(row);
+			ax = ax+1;
 		}
+		ay = ay+1;
 	}
 };
 
 JSDungeon.MAP.prototype._rebuildMap = function(){
 	this._clearMap();
-	var a = this.shadows.getResults(this.start);
+	var a = this.showShadow();
 	if(!this.opt.allMap){
 		this._smallRebuild(a);
 	} else {

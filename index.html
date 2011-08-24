@@ -17,21 +17,22 @@
 		</style>
 		<div id="page">
 			
-			<!---<div id="canvasMain">
+			<div id="canvasMain">
 				<canvas id="canvasMap" width="600" height="600"></canvas>
-			</div>--->
+			</div>
 			<h2>Where is the blue dot ?</h2>
 			<p>(Move with arrows.)</p>
 			
-			<div id="pica"></div>
+			<!---<div id="pica"></div>
 			<div>
 				<a id="sp" href="#">splachni</a><br />
 				<a id="ser" href="#">ser</a>
-			</div>
+			</div>--->
 			
 			<script type="text/javascript">
-				//var canvasDungeon = new JSDungeon.Dungeon('canvasMap');
-				test = JAK.ClassMaker.makeClass({
+				var canvasDungeon = new JSDungeon.Dungeon('canvasMap');
+				
+				/*-test = JAK.ClassMaker.makeClass({
 					NAME : 'test',
 					VERSION : '1.0'
 				});
@@ -47,7 +48,6 @@
 					var sp = JAK.gel('sp');					
 					this.ec1 = JAK.Events.addListener( sp, 'click', this, 'splachni' );
 				};
-				/*----*/
 				testA = JAK.ClassMaker.makeClass({
 					NAME : 'testA',
 					VERSION : '1.0',
@@ -65,7 +65,7 @@
 					var a = new testA('pica');
 				} catch(e){
 					console.log(e)
-				}
+				}-*/
 				
 				
 			</script>

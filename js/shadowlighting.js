@@ -28,12 +28,6 @@ JSDungeon.ShadowLighting = JAK.ClassMaker.makeClass({
 	EXTEND : JSDungeon.MAP
 });
 
-JSDungeon.ShadowLighting.prototype.$constructor = function(map, mapConst, radius){
-	this.MAP = map;
-	this.mapConst = mapConst;
-	this.radius = radius;
-};
-
 JSDungeon.ShadowLighting.prototype._visibleCoords = function(blocks, startArc, arcsPerCell, arcs) {
 	var eps = 1e-4;
 	var startIndex = Math.floor(startArc);
@@ -115,9 +109,9 @@ JSDungeon.ShadowLighting.prototype._blocks = function(c){
 	return false;
 };
 
-JSDungeon.ShadowLighting.prototype.getResults = function(start){
+JSDungeon.ShadowLighting.prototype.showShadow = function(){
 	var R = this.radius;
-	var center = start;
+	var center = this.start;
 	var map = this.MAP;
 	var eps = 1e-4;
 	var c = false;
@@ -141,9 +135,9 @@ JSDungeon.ShadowLighting.prototype.getResults = function(start){
 			var startArc = (i-0.5) * arcsPerCell + 0.5;
 			if (this._visibleCoords(this._blocks(c), startArc, arcsPerCell, arcs)) { 
 				result.push(c);
-			} else {
+			}/*- else {
 				result.push(null);
-			}
+			}-*/
 			/* cutoff? */
 			var done = true;
 			for (var j=0;j<arcCount;j++) {

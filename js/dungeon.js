@@ -9,7 +9,7 @@ JSDungeon.Dungeon = JAK.ClassMaker.makeClass({
 });
 JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.opt = {
-		allMap : 1,
+		allMap : 0,
 		radius : 5
 	}
 	this.mapConst = 50;
@@ -17,22 +17,25 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.ec = [];
 	this.dom.map = JAK.gel(map);
 	this.canvasMap = this.dom.map.getContext('2d');
-	this.map = new JSDungeon.MAP({
+	this.map = new JSDungeon.ShadowLighting({
 		mapElm : this.dom.map,
 		canvas : this.canvasMap,
 		radius : this.opt.radius,
 		mapConst : this.mapConst,
 		allMap : this.opt.allMap
 	});
+	this.MAP = this.map.getMap();
 	this._link();
 };
 
 JSDungeon.Dungeon.prototype._finder = function(ns){
-	switch(this.MAP[ns[0]][ns[1]]){
-		case 'none' : return 1; break;
-		case 'lava' : return 0; break;
-		case 'end' : this._win(); break;
-		default : return; break;
+	if((ns[0] >= 0 || ns[0] < this.mapConst) && (ns[1] >= 0 || ns[1] < this.mapConst)){
+		switch(this.MAP[ns[0]][ns[1]]){
+			case 'none' : return 1; break;
+			case 'lava' : return 0; break;
+			case 'end' : this._win(); break;
+			default : return; break;
+		}
 	}
 };
 JSDungeon.Dungeon.prototype._end = function(){
@@ -86,6 +89,7 @@ JSDungeon.Dungeon.prototype._moveLeft = function(e){
 	}
 };
 JSDungeon.Dungeon.prototype._move = function(e, elm){
+	this.start = this.map.getStart();
 	switch(e.keyCode){
 		case 38 :
 			this._moveUp(e);
