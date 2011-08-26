@@ -27,7 +27,6 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.MAP = this.map.getMap();
 	this._link();
 };
-
 JSDungeon.Dungeon.prototype._finder = function(ns){
 	if((ns[0] >= 0 || ns[0] < this.mapConst) && (ns[1] >= 0 || ns[1] < this.mapConst)){
 		switch(this.MAP[ns[0]][ns[1]]){
@@ -88,8 +87,12 @@ JSDungeon.Dungeon.prototype._moveLeft = function(e){
 		this.map._rebuildMap();
 	}
 };
+JSDungeon.Dungeon.prototype._attack = function(e){
+	return;
+};
 JSDungeon.Dungeon.prototype._move = function(e, elm){
 	this.start = this.map.getStart();
+	console.log(e.keyCode);
 	switch(e.keyCode){
 		case 38 :
 			this._moveUp(e);
@@ -103,11 +106,14 @@ JSDungeon.Dungeon.prototype._move = function(e, elm){
 		case 39 :
 			this._moveRight(e);
 			break;
+		case 32 :
+			this._attack(e);
+			break;
 		default :
 			return;
 			break;
 	}
 };
 JSDungeon.Dungeon.prototype._link = function(){
-	this.ec.push( JAK.Events.addListener( window, 'keypress', this, '_move' ) );
+	this.ec.push( JAK.Events.addListener( window, 'keydown', this, '_move' ) );
 };
