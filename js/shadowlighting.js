@@ -1,26 +1,6 @@
 /**
  * @constants
  **/
-RPG = {};
-RPG.N				= 0;
-RPG.NE				= 1;
-RPG.E				= 2;
-RPG.SE				= 3;
-RPG.S				= 4;
-RPG.SW				= 5;
-RPG.W				= 6;
-RPG.NW				= 7;
-RPG.CENTER			= 8;
-RPG.DIR = {};
-RPG.DIR[RPG.N] =  [0, -1];
-RPG.DIR[RPG.NE] = [1, -1];
-RPG.DIR[RPG.E] =  [1,  0];
-RPG.DIR[RPG.SE] = [1,  1];
-RPG.DIR[RPG.S] =  [0,  1];
-RPG.DIR[RPG.SW] = [-1, 1];
-RPG.DIR[RPG.W] =  [-1, 0];
-RPG.DIR[RPG.NW] = [-1,-1];
-RPG.DIR[RPG.CENTER] =  [0, 0];
 
 JSDungeon.ShadowLighting = JAK.ClassMaker.makeClass({
 	VERSION : '1.1',

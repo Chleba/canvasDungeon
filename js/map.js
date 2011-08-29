@@ -107,7 +107,7 @@ JSDungeon.MAP.prototype._obsticlesFinder = function(coords){
 	return color;
 };
 
-JSDungeon.MAP.prototype._MALEJ = function(){
+JSDungeon.MAP.prototype._smallCorner = function(){
 	var a = (this.opt.radius*2)+1;
 	var middle = ((a-1)/2);
 	var x = this.start[1];
@@ -130,39 +130,32 @@ JSDungeon.MAP.prototype._isVisible = function(vis, coords){
 JSDungeon.MAP.prototype._smallRebuild = function(vis){
 	var a = (this.opt.radius*2)+1;
 	var middle = ((a-1)/2);
-	var startCoors = this._MALEJ();
+	var startCoors = this._smallCorner();
 	var sx = startCoors.x;
 	var sy = startCoors.y;
 	var ex = (sx+a)+1 > this.mapConst ? this.mapConst : (sx+a)+1;
 	var ey = (sy+a)+1 > this.mapConst ? this.mapConst : (sy+a)+1;
-	var newMap = [];
 	
 	var ay = 0;
 	for(var i=sy;i<ey;i++){
-		var row = [];
 		var ax = 0;
 		for(var j=sx;j<ex;j++){
-			
 			var coords = [i,j].toString();
 			var isVisible = this._isVisible(vis, coords);
-			
 			var color = '#000';
 			if(isVisible){
 				switch(this.MAP[i][j]){
 					case 'lava' :
-						row.push('lava');
 						color = '#a30000';
 						break;
-					case 'none' : 
-						row.push('none');
+					case 'none' :
 						color = '#272727';
 						break;
-					case 'start' : 
-						row.push('start');
+					case 'start' :
+					    this.smallStart = [ay, ax];
 						color = '#FFFFFF';
 						break;
-					case 'end' : 
-						row.push('end');
+					case 'end' :
 						color = '#0000cc'; 
 						break;
 					default : 
@@ -172,11 +165,36 @@ JSDungeon.MAP.prototype._smallRebuild = function(vis){
 			}
 			this.canvasMap.fillStyle = color;
 			this.canvasMap.fillRect(this.pointW*ay, this.pointH*ax, this.pointW, this.pointH);
-			newMap.push(row);
 			ax = ax+1;
 		}
 		ay = ay+1;
 	}
+};
+
+JSDungeon.MAP.prototype.fillSingleSquare = function(coords, color){
+	this.canvasMap.fillStyle = color;
+	this.canvasMap.fillRect(this.pointW*coords[0], this.pointH*coords[1], this.pointW, this.pointH);
+};
+
+JSDungeon.MAP.prototype.getMapColor = function(coords){
+    switch(this.MAP[coords[0]][coords[1]]){
+		case 'lava' :
+			color = '#a30000';
+			break;
+		case 'none' :
+			color = '#272727';
+			break;
+		case 'start' :
+			color = '#FFFFFF';
+			break;
+		case 'end' :
+			color = '#0000cc';
+			break;
+		default :
+			return;
+			break;
+	}
+	return color;
 };
 
 JSDungeon.MAP.prototype._rebuildMap = function(){
