@@ -11,6 +11,7 @@
 	    <script type="text/javascript" src="./js/dungeon.js"></script>
 	    <script type="text/javascript" src="./js/map.js"></script>
 	    <script type="text/javascript" src="./js/shadowlighting.js"></script>
+	    <script type="text/javascript" src="./js/npc.js"></script>
 		<style>
 			#canvasMain 	{ position:relative; height:450px; }
 			#canvasMain canvas	{ display:block; position:absolute; top:0px; left:0px; }

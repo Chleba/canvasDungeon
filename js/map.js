@@ -37,7 +37,9 @@ JSDungeon.MAP.prototype.getMap = function(){
 };
 
 JSDungeon.MAP.prototype._randRange = function(min, max){
-	return (Math.floor(Math.random() * (min-max+1))+min)*-1;
+	var rand = (Math.floor(Math.random() * (min-max+1))+min)*-1;
+	//var rand = Math.floor(Math.random() * (max - min + 1) + min)
+	return rand;
 };
 
 JSDungeon.MAP.prototype._obsticlesFinder = function(coords){
@@ -155,6 +157,10 @@ JSDungeon.MAP.prototype._smallRebuild = function(vis){
 					    this.smallStart = [ay, ax];
 						color = '#FFFFFF';
 						break;
+					case 'npc' : 
+						this.smallNpc = [ay, ax];
+						color = '#00ff00';
+						break;
 					case 'end' :
 						color = '#0000cc'; 
 						break;
@@ -190,6 +196,9 @@ JSDungeon.MAP.prototype.getMapColor = function(coords){
 		case 'end' :
 			color = '#0000cc';
 			break;
+		case 'npc' :
+			color = '#00ff00';
+			break;
 		default :
 			return;
 			break;
@@ -213,6 +222,35 @@ JSDungeon.MAP.prototype._rebuildMap = function(){
 					case 'lava' : color = '#a30000'; break;
 					case 'none' : color = '#272727'; break;
 					case 'start' : color = '#fff'; break;
+					case 'npc' : color = '#00FF00'; break;
+					case 'end' : color = '#0000cc'; break;
+					default : JAK.Events.cancelDef(e); return; break;
+				}
+				this.canvasMap.fillStyle = color;
+				this.canvasMap.fillRect(this.pointW*x, this.pointH*y, this.pointW, this.pointH);
+			}
+		}
+	}
+};
+
+
+JSDungeon.MAP.prototype._rebuildMap = function(){
+	this._clearMap();
+	var a = this.showShadow();
+	if(!this.opt.allMap){
+		this._smallRebuild(a);
+	} else {
+		for(var i=0;i<a.length;i++){
+			if(a[i]){
+				var x = a[i][0];
+				var y = a[i][1];
+				
+				var color = '#000';
+				switch(this.MAP[x][y]){
+					case 'lava' : color = '#a30000'; break;
+					case 'none' : color = '#272727'; break;
+					case 'start' : color = '#fff'; break;
+					case 'npc' : color = '#00FF00'; break;
 					case 'end' : color = '#0000cc'; break;
 					default : JAK.Events.cancelDef(e); return; break;
 				}
