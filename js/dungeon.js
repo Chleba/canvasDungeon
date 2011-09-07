@@ -24,6 +24,11 @@ RPG.DIR[RPG.W] =  [-1, 0];
 RPG.DIR[RPG.NW] = [-1,-1];
 RPG.DIR[RPG.CENTER] =  [0, 0];
 
+RPG.NONE = 0;
+RPG.NPC = 'npc';
+RPG.WALL = 2;
+RPG.YOU = 3;
+
 JSDungeon.Dungeon = JAK.ClassMaker.makeClass({
 	NAME : 'CanvasDungeon',
 	VERSION : '1.1'
@@ -31,7 +36,7 @@ JSDungeon.Dungeon = JAK.ClassMaker.makeClass({
 JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.opt = {
 		allMap : 1,
-		radius : 15
+		radius : 5
 	}
 	this.direction = RPG.E;
 	this.mapConst = 50;
@@ -46,6 +51,7 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 		mapConst : this.mapConst,
 		allMap : this.opt.allMap
 	});
+	this.npc = new JSDungeon.NPC(this.map);
 	this.MAP = this.map.getMap();
 	this._link();
 };
