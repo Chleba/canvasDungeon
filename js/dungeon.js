@@ -30,8 +30,8 @@ JSDungeon.Dungeon = JAK.ClassMaker.makeClass({
 });
 JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.opt = {
-		allMap : 0,
-		radius : 5
+		allMap : 1,
+		radius : 15
 	}
 	this.direction = RPG.E;
 	this.mapConst = 50;
