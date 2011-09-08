@@ -119,16 +119,6 @@ JSDungeon.MAP.prototype._smallCorner = function(){
 	return { x : xx, y : yy }
 };
 
-JSDungeon.MAP.prototype._isVisible = function(vis, coords){
-	for(var i=0;i<vis.length;i++){
-		if(vis[i].toString() == coords){
-			return 1;
-			break;
-		}
-	}
-	return 0;
-};
-
 JSDungeon.MAP.prototype._smallRebuild = function(vis){
 	var a = (this.opt.radius*2)+1;
 	var middle = ((a-1)/2);
@@ -143,7 +133,7 @@ JSDungeon.MAP.prototype._smallRebuild = function(vis){
 		var ax = 0;
 		for(var j=sx;j<ex;j++){
 			var coords = [i,j].toString();
-			var isVisible = this._isVisible(vis, coords);
+			var isVisible = vis[coords] ? 1 : 0;
 			var color = '#000';
 			if(isVisible){
 				switch(this.MAP[i][j]){
@@ -175,6 +165,7 @@ JSDungeon.MAP.prototype._smallRebuild = function(vis){
 		}
 		ay = ay+1;
 	}
+		
 };
 
 JSDungeon.MAP.prototype.fillSingleSquare = function(coords, color){
@@ -206,59 +197,67 @@ JSDungeon.MAP.prototype.getMapColor = function(coords){
 	return color;
 };
 
+JSDungeon.MAP.prototype._makeObjectFromVisibleCoords = function(vis){
+	var obj = {};
+	for(var i=0;i<vis.length;i++){
+		var coords = vis[i].toString();
+		obj[coords] = 1;
+	}
+	return obj;
+};
+
 JSDungeon.MAP.prototype._rebuildMap = function(){
 	this._clearMap();
 	var a = this.showShadow();
 	if(!this.opt.allMap){
-		this._smallRebuild(a);
+		var visCoords = this._makeObjectFromVisibleCoords(a)
+		this._smallRebuild(visCoords);
 	} else {
-		for(var i=0;i<a.length;i++){
-			if(a[i]){
-				var x = a[i][0];
-				var y = a[i][1];
-				
-				var color = '#000';
-				switch(this.MAP[x][y]){
-					case 'lava' : color = '#a30000'; break;
-					case 'none' : color = '#272727'; break;
-					case 'start' : color = '#fff'; break;
-					case 'npc' : color = '#00FF00'; break;
-					case 'end' : color = '#0000cc'; break;
-					default : JAK.Events.cancelDef(e); return; break;
+		if(!a){
+			this._normalMap();
+		} else {
+			for(var i=0;i<a.length;i++){
+				if(a[i]){
+					var x = a[i][0];
+					var y = a[i][1];
+					
+					var color = '#000';
+					switch(this.MAP[x][y]){
+						case 'lava' : color = '#a30000'; break;
+						case 'none' : color = '#272727'; break;
+						case 'start' : color = '#fff'; break;
+						case 'npc' : color = '#00FF00'; break;
+						case 'end' : color = '#0000cc'; break;
+						default : JAK.Events.cancelDef(e); return; break;
+					}
+					this.canvasMap.fillStyle = color;
+					this.canvasMap.fillRect(this.pointW*x, this.pointH*y, this.pointW, this.pointH);
 				}
-				this.canvasMap.fillStyle = color;
-				this.canvasMap.fillRect(this.pointW*x, this.pointH*y, this.pointW, this.pointH);
 			}
 		}
 	}
 };
 
-
-JSDungeon.MAP.prototype._rebuildMap = function(){
-	this._clearMap();
-	var a = this.showShadow();
-	if(!this.opt.allMap){
-		this._smallRebuild(a);
-	} else {
-		for(var i=0;i<a.length;i++){
-			if(a[i]){
-				var x = a[i][0];
-				var y = a[i][1];
-				
-				var color = '#000';
-				switch(this.MAP[x][y]){
-					case 'lava' : color = '#a30000'; break;
-					case 'none' : color = '#272727'; break;
-					case 'start' : color = '#fff'; break;
-					case 'npc' : color = '#00FF00'; break;
-					case 'end' : color = '#0000cc'; break;
-					default : JAK.Events.cancelDef(e); return; break;
-				}
-				this.canvasMap.fillStyle = color;
-				this.canvasMap.fillRect(this.pointW*x, this.pointH*y, this.pointW, this.pointH);
+JSDungeon.MAP.prototype._normalMap = function(){
+	for(var i=0;i<this.MAP.length;i++){
+		for(var j=0;j<this.MAP[i].length;j++){
+			var color = '#000';
+			switch(this.MAP[i][j]){
+				case 'lava' : color = '#a30000'; break;
+				case 'none' : color = '#272727'; break;
+				case 'start' : color = '#fff'; break;
+				case 'npc' : color = '#00FF00'; break;
+				case 'end' : color = '#0000cc'; break;
+				default : return; break;
 			}
+			this.canvasMap.fillStyle = color;
+			this.canvasMap.fillRect(this.pointW*i, this.pointH*j, this.pointW, this.pointH);
 		}
 	}
+};
+
+JSDungeon.MAP.prototype.showShadow = function(){
+	return 0;
 };
 
 JSDungeon.MAP.prototype._placeStart = function(){

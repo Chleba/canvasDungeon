@@ -35,7 +35,7 @@ JSDungeon.Dungeon = JAK.ClassMaker.makeClass({
 });
 JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.opt = {
-		allMap : 1,
+		allMap : 0,
 		radius : 5
 	}
 	this.direction = RPG.E;
@@ -44,6 +44,7 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.ec = [];
 	this.dom.map = JAK.gel(map);
 	this.canvasMap = this.dom.map.getContext('2d');
+	//this.map = new JSDungeon.MAP({
 	this.map = new JSDungeon.ShadowLighting({
 		mapElm : this.dom.map,
 		canvas : this.canvasMap,
@@ -51,7 +52,18 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 		mapConst : this.mapConst,
 		allMap : this.opt.allMap
 	});
-	this.npc = new JSDungeon.NPC(this.map);
+	this.npcs = [
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map)
+	];
 	this.MAP = this.map.getMap();
 	this._link();
 };

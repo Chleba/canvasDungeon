@@ -45,14 +45,17 @@ JSDungeon.NPC.prototype._moveCoords = function(){
 		var nc = [this.coords[0]+dir[0], this.coords[1]+dir[1]];
 		var x = nc[0];
 		var y = nc[1];
+		if(x < 0){ x = 0; } else if(x > this.map.mapConst){ x = this.map.mapConst; }
+		if(y < 0){ y = 0; } else if(y > this.map.mapConst){ y = this.map.mapConst; }
 		var place = this.map.MAP[x][y];
-	} while(place == 'lava');
+	} while(place == 'lava' || place == 'npc' || place == 'start');
 	return nc;
 };
 
 JSDungeon.NPC.prototype._move = function(){
 	var nc = this._moveCoords();
-	console.log(nc);
+	this.map.MAP[this.coords[0]][this.coords[1]] = 'none';
 	this.map.MAP[nc[0]][nc[1]] = 'npc';
+	this.coords = nc;
 	this.map._rebuildMap();
 };
