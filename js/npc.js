@@ -52,7 +52,20 @@ JSDungeon.NPC.prototype._moveCoords = function(){
 	return nc;
 };
 
+JSDungeon.NPC.prototype._isOnRange = function(){
+	/*var a = this.coords[0]*this.coords[0];
+	var b = this.coords[1]*this.coords[1];
+	var c = Math.sqrt(a+b);
+	*/
+	var a = Math.sqrt((this.map.start[0]*this.map.start[0])+(this.map.start[1]*this.map.start[1]));
+	var b = Math.sqrt((this.coords[0]*this.coords[0])+(this.coords[1]*this.coords[1]));
+	//var c = Math.sqrt(a+b);
+	c = Math.sqrt(a+b);
+	console.log(c);
+};
+
 JSDungeon.NPC.prototype._move = function(){
+	var isOnRange = this._isOnRange();
 	var nc = this._moveCoords();
 	this.map.MAP[this.coords[0]][this.coords[1]] = 'none';
 	this.map.MAP[nc[0]][nc[1]] = 'npc';

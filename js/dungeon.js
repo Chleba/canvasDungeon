@@ -31,11 +31,11 @@ RPG.YOU = 3;
 
 JSDungeon.Dungeon = JAK.ClassMaker.makeClass({
 	NAME : 'CanvasDungeon',
-	VERSION : '1.1'
+	VERSION : '1.2'
 });
 JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.opt = {
-		allMap : 0,
+		allMap : 1,
 		radius : 5
 	}
 	this.direction = RPG.E;
@@ -44,8 +44,8 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.ec = [];
 	this.dom.map = JAK.gel(map);
 	this.canvasMap = this.dom.map.getContext('2d');
-	//this.map = new JSDungeon.MAP({
-	this.map = new JSDungeon.ShadowLighting({
+	this.map = new JSDungeon.MAP({
+	//this.map = new JSDungeon.ShadowLighting({
 		mapElm : this.dom.map,
 		canvas : this.canvasMap,
 		radius : this.opt.radius,
@@ -53,6 +53,7 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 		allMap : this.opt.allMap
 	});
 	this.npcs = [
+		/*new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
@@ -60,8 +61,7 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
-		new JSDungeon.NPC(this.map),
-		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),*/
 		new JSDungeon.NPC(this.map)
 	];
 	this.MAP = this.map.getMap();
