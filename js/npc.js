@@ -48,27 +48,54 @@ JSDungeon.NPC.prototype._moveCoords = function(){
 		if(x < 0){ x = 0; } else if(x > this.map.mapConst){ x = this.map.mapConst; }
 		if(y < 0){ y = 0; } else if(y > this.map.mapConst){ y = this.map.mapConst; }
 		var place = this.map.MAP[x][y];
-	} while(place == 'lava' || place == 'npc' || place == 'start');
+	} while(place == 'lava' || place == 'npc' || place == 'start' || place == 'end');
 	return nc;
 };
 
-JSDungeon.NPC.prototype._isOnRange = function(){
-	/*var a = this.coords[0]*this.coords[0];
-	var b = this.coords[1]*this.coords[1];
-	var c = Math.sqrt(a+b);
-	*/
-	var a = Math.sqrt((this.map.start[0]*this.map.start[0])+(this.map.start[1]*this.map.start[1]));
-	var b = Math.sqrt((this.coords[0]*this.coords[0])+(this.coords[1]*this.coords[1]));
-	//var c = Math.sqrt(a+b);
-	c = Math.sqrt(a+b);
-	console.log(c);
+JSDungeon.NPC.prototype._isOnRange = function(coords){
+	var a = (this.map.start[0]-coords[0])
+	var b = (this.map.start[1]-coords[1])
+	var c = Math.sqrt((a*a)+(b*b));
+	if(c < this.map.opt.radius){ return c; }
+	return 0;
+};
+
+JSDungeon.NPC.prototype._nearCoords = function(){
+	var r = this._isOnRange(this.coords);
+	var far = [];
+	var fc = {};
+	var i = 0;
+ 	do {
+        var coords = this._moveCoords();
+		var r1 = this._isOnRange(coords);
+		if(r1 < 2){ this._attack(); break; }
+		if(far.indexOf(r1) == -1){
+			far.push(r1);
+			fc[r1] = coords;
+		}
+		if(i == 8){
+			return fc[far.min()];
+		}
+		i++;
+	} while(r1 >= r)
+	return coords;
 };
 
 JSDungeon.NPC.prototype._move = function(){
-	var isOnRange = this._isOnRange();
-	var nc = this._moveCoords();
+	var isOnRange = this._isOnRange(this.coords);
+	if(isOnRange){
+	    var nc = this._nearCoords();
+	} else {
+		var nc = this._moveCoords();
+	}
 	this.map.MAP[this.coords[0]][this.coords[1]] = 'none';
 	this.map.MAP[nc[0]][nc[1]] = 'npc';
 	this.coords = nc;
-	this.map._rebuildMap();
+	if(this.map.opt.allMap || this.isOnRange){
+		this.map._rebuildMap();
+	}
+};
+
+JSDungeon.NPC.prototype._attack = function(){
+	return;
 };

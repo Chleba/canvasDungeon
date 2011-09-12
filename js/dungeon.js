@@ -1,5 +1,6 @@
 /**
  * Simple canvas dungeon, looking for end, game with discreet shadow casting algorithm with many thanks to Ondrej Zara <ondra.zarovi.cz>
+ * Made by cHLeB@ <chleba@chleba.org>
  */
 var JSDungeon = {};
 
@@ -28,6 +29,13 @@ RPG.NONE = 0;
 RPG.NPC = 'npc';
 RPG.WALL = 2;
 RPG.YOU = 3;
+
+Array.prototype.min = function(){
+	return Math.min.apply(Math, this);
+};
+Array.prototype.max = function(){
+	return Math.max.apply(Math, this);
+};
 
 JSDungeon.Dungeon = JAK.ClassMaker.makeClass({
 	NAME : 'CanvasDungeon',
