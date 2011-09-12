@@ -48,14 +48,43 @@ JSDungeon.NPC.prototype._moveCoords = function(){
 		if(x < 0){ x = 0; } else if(x > this.map.mapConst){ x = this.map.mapConst; }
 		if(y < 0){ y = 0; } else if(y > this.map.mapConst){ y = this.map.mapConst; }
 		var place = this.map.MAP[x][y];
-	} while(place == 'lava' || place == 'npc' || place == 'start');
+	} while(place == 'lava' || place == 'npc' || place == 'start' || place == 'end');
 	return nc;
 };
 
+JSDungeon.NPC.prototype._isOnRange = function(coords){
+	var a = (this.map.start[0]-coords[0])
+	var b = (this.map.start[1]-coords[1])
+	var c = Math.sqrt((a*a)+(b*b));
+	if(c < this.map.opt.radius){ return c; }
+	return 0;
+};
+
+JSDungeon.NPC.prototype._nearCoords = function(){
+	var r = this._isOnRange(this.coords);
+	var coords = [];
+ 	coords.push(this._moveCoords());
+ 	do {
+ 	    for(var i=0;i<coords.length;i++){
+ 	        if(this._isOnRange(coords[i])
+ 	    }
+        var coords = this._moveCoords();
+		var r1 = this._isOnRange(coords);
+	} while(r1 >= r)
+	return coords;
+};
+
 JSDungeon.NPC.prototype._move = function(){
-	var nc = this._moveCoords();
+	var isOnRange = this._isOnRange(this.coords);
+	if(isOnRange){
+	    var nc = this._nearCoords();
+	} else {
+		var nc = this._moveCoords();
+	}
 	this.map.MAP[this.coords[0]][this.coords[1]] = 'none';
 	this.map.MAP[nc[0]][nc[1]] = 'npc';
 	this.coords = nc;
-	this.map._rebuildMap();
+	if(this.map.opt.allMap || this.isOnRange){
+		this.map._rebuildMap();
+	}
 };
