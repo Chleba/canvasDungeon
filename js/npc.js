@@ -62,14 +62,21 @@ JSDungeon.NPC.prototype._isOnRange = function(coords){
 
 JSDungeon.NPC.prototype._nearCoords = function(){
 	var r = this._isOnRange(this.coords);
-	var coords = [];
- 	coords.push(this._moveCoords());
+	var far = [];
+	var fc = {};
+	var i = 0;
  	do {
- 	    for(var i=0;i<coords.length;i++){
- 	        if(this._isOnRange(coords[i])
- 	    }
         var coords = this._moveCoords();
 		var r1 = this._isOnRange(coords);
+		if(r1 < 2){ this._attack(); break; }
+		if(far.indexOf(r1) == -1){
+			far.push(r1);
+			fc[r1] = coords;
+		}
+		if(i == 8){
+			return fc[far.min()];
+		}
+		i++;
 	} while(r1 >= r)
 	return coords;
 };
@@ -87,4 +94,8 @@ JSDungeon.NPC.prototype._move = function(){
 	if(this.map.opt.allMap || this.isOnRange){
 		this.map._rebuildMap();
 	}
+};
+
+JSDungeon.NPC.prototype._attack = function(){
+	return;
 };
