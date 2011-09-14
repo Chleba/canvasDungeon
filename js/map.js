@@ -263,6 +263,7 @@ JSDungeon.MAP.prototype.showShadow = function(){
 JSDungeon.MAP.prototype._placeStart = function(){
 	var randx = this._randRange(1, this.mapConst);
 	var randy = this._randRange(1, this.mapConst);
+	
 	this.canvasMap.fillStyle = '#ffffff';
 	this.canvasMap.fillRect(this.pointW*randx, this.pointH*randy, this.pointW, this.pointH);
 	this.start = [randx, randy];

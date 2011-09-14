@@ -13,6 +13,7 @@ JSDungeon.NPC.prototype.$constructor = function(map){
 JSDungeon.NPC.prototype._makeNPC = function(){
 	var rx = this.map._randRange(0, this.map.mapConst);
 	var ry = this.map._randRange(0, this.map.mapConst);
+	
 	this.coords = [rx, ry];
 	this.map.MAP[rx][ry] = 'npc';
 	this.setTicker();
@@ -23,7 +24,7 @@ JSDungeon.NPC.prototype.stopTicker = function(){
 };
 
 JSDungeon.NPC.prototype.setTicker = function(){
-	this.ticker = setInterval(this._move.bind(this), 1000);
+	this.ticker = setInterval(this._move.bind(this), this.interval);
 };
 
 JSDungeon.NPC.prototype._direction = function(){
@@ -45,8 +46,8 @@ JSDungeon.NPC.prototype._moveCoords = function(){
 		var nc = [this.coords[0]+dir[0], this.coords[1]+dir[1]];
 		var x = nc[0];
 		var y = nc[1];
-		if(x < 0){ x = 0; } else if(x > this.map.mapConst){ x = this.map.mapConst; }
-		if(y < 0){ y = 0; } else if(y > this.map.mapConst){ y = this.map.mapConst; }
+		if(x < 0){ x = 0; } else if(x > this.map.mapConst-1){ x = this.map.mapConst-1; }
+		if(y < 0){ y = 0; } else if(y > this.map.mapConst-1){ y = this.map.mapConst-1; }
 		var place = this.map.MAP[x][y];
 	} while(place == 'lava' || place == 'npc' || place == 'start' || place == 'end');
 	return nc;

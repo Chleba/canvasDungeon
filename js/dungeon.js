@@ -44,7 +44,7 @@ JSDungeon.Dungeon = JAK.ClassMaker.makeClass({
 JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.opt = {
 		allMap : 1,
-		radius : 5
+		radius : 500
 	}
 	this.direction = RPG.E;
 	this.mapConst = 50;
@@ -61,7 +61,6 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 		allMap : this.opt.allMap
 	});
 	this.npcs = [
-		/*new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
@@ -69,7 +68,8 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
-		new JSDungeon.NPC(this.map),-*/
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map)
 	];
 	this.MAP = this.map.getMap();
