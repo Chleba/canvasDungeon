@@ -1,14 +1,15 @@
 
 JSDungeon.MAP = JAK.ClassMaker.makeClass({
 	NAME : 'JSDungeon.MAP',
-	VERSION : '1.0'
+	VERSION : '1.0',
+	IMPLEMENT : JAK.ISignals
 });
 
 JSDungeon.MAP.prototype.$constructor = function(opt){
 	this.opt = {
 		mapElm : null,
 		canvas : null,
-		radius : 5,
+		radius : 10,
 		mapConst : 50,
 		allMap : 1
 	}
@@ -48,10 +49,10 @@ JSDungeon.MAP.prototype._obsticlesFinder = function(coords){
 	var y = coords[1];
 	var color = '#000';
 	switch(this.MAP[x][y]){
-		case 'lava' : color = '#a30000'; break;
-		case 'none' : color = '#272727'; break;
-		case 'start' : color = '#fff'; break;
-		case 'end' : color = '#0000cc'; break;
+		case RPG.WALL : color = '#a30000'; break;
+		case RPG.NONE : color = '#272727'; break;
+		case RPG.YOU : color = '#fff'; break;
+		case RPG.END : color = '#0000cc'; break;
 		default : color = '#272727'; break;
 	}
 	return color;
@@ -69,10 +70,10 @@ JSDungeon.MAP.prototype._buildMap = function(){
 			var rand = Math.random()*10;
 			if(Math.round(rand) == 5){
 			//if(i < 5 && j < 15){
-				row.push('lava');
+				row.push(RPG.WALL);
 				this.canvasMap.fillStyle = '#a30000';
 			} else {
-				row.push('none');
+				row.push(RPG.NONE);
 				this.canvasMap.fillStyle = '#272727';
 			}
 			this.canvasMap.fillRect(this.pointW*i, this.pointH*j, this.pointW, this.pointH);
@@ -100,10 +101,10 @@ JSDungeon.MAP.prototype._obsticlesFinder = function(coords){
 	var y = coords[1];
 	var color = '#000';
 	switch(this.MAP[x][y]){
-		case 'lava' : color = '#a30000'; break;
-		case 'none' : color = '#272727'; break;
-		case 'start' : color = '#fff'; break;
-		case 'end' : color = '#0000cc'; break;
+		case RPG.WALL : color = '#a30000'; break;
+		case RPG.NONE : color = '#272727'; break;
+		case RPG.YOU : color = '#fff'; break;
+		case RPG.END : color = '#0000cc'; break;
 		default : color = '#272727'; break;
 	}
 	return color;
@@ -137,21 +138,21 @@ JSDungeon.MAP.prototype._smallRebuild = function(vis){
 			var color = '#000';
 			if(isVisible){
 				switch(this.MAP[i][j]){
-					case 'lava' :
+					case RPG.WALL :
 						color = '#a30000';
 						break;
-					case 'none' :
+					case RPG.NONE :
 						color = '#272727';
 						break;
-					case 'start' :
+					case RPG.YOU :
 					    this.smallStart = [ay, ax];
 						color = '#FFFFFF';
 						break;
-					case 'npc' : 
+					case RPG.NPC :
 						this.smallNpc = [ay, ax];
 						color = '#00ff00';
 						break;
-					case 'end' :
+					case RPG.END :
 						color = '#0000cc'; 
 						break;
 					default : 
@@ -165,7 +166,7 @@ JSDungeon.MAP.prototype._smallRebuild = function(vis){
 		}
 		ay = ay+1;
 	}
-		
+	this.makeEvent('rebuildMap');
 };
 
 JSDungeon.MAP.prototype.fillSingleSquare = function(coords, color){
@@ -175,19 +176,19 @@ JSDungeon.MAP.prototype.fillSingleSquare = function(coords, color){
 
 JSDungeon.MAP.prototype.getMapColor = function(coords){
     switch(this.MAP[coords[0]][coords[1]]){
-		case 'lava' :
+		case RPG.WALL :
 			color = '#a30000';
 			break;
-		case 'none' :
+		case RPG.NONE :
 			color = '#272727';
 			break;
-		case 'start' :
+		case RPG.YOU :
 			color = '#FFFFFF';
 			break;
-		case 'end' :
+		case RPG.END :
 			color = '#0000cc';
 			break;
-		case 'npc' :
+		case RPG.NPC :
 			color = '#00ff00';
 			break;
 		default :
@@ -223,12 +224,12 @@ JSDungeon.MAP.prototype._rebuildMap = function(){
 					
 					var color = '#000';
 					switch(this.MAP[x][y]){
-						case 'lava' : color = '#a30000'; break;
-						case 'none' : color = '#272727'; break;
-						case 'start' : color = '#fff'; break;
-						case 'npc' : color = '#00FF00'; break;
-						case 'end' : color = '#0000cc'; break;
-						default : JAK.Events.cancelDef(e); return; break;
+						case RPG.WALL : color = '#a30000'; break;
+						case RPG.NONE : color = '#272727'; break;
+						case RPG.YOU : color = '#fff'; break;
+						case RPG.NPC : color = '#00FF00'; break;
+						case RPG.END : color = '#0000cc'; break;
+						default : return; break;
 					}
 					this.canvasMap.fillStyle = color;
 					this.canvasMap.fillRect(this.pointW*x, this.pointH*y, this.pointW, this.pointH);
@@ -236,6 +237,7 @@ JSDungeon.MAP.prototype._rebuildMap = function(){
 			}
 		}
 	}
+	this.makeEvent('rebuildMap');
 };
 
 JSDungeon.MAP.prototype._normalMap = function(){
@@ -243,17 +245,18 @@ JSDungeon.MAP.prototype._normalMap = function(){
 		for(var j=0;j<this.MAP[i].length;j++){
 			var color = '#000';
 			switch(this.MAP[i][j]){
-				case 'lava' : color = '#a30000'; break;
-				case 'none' : color = '#272727'; break;
-				case 'start' : color = '#fff'; break;
-				case 'npc' : color = '#00FF00'; break;
-				case 'end' : color = '#0000cc'; break;
+				case RPG.WALL : color = '#a30000'; break;
+				case RPG.NONE : color = '#272727'; break;
+				case RPG.YOU : color = '#fff'; break;
+				case RPG.NPC : color = '#00FF00'; break;
+				case RPG.END : color = '#0000cc'; break;
 				default : return; break;
 			}
 			this.canvasMap.fillStyle = color;
 			this.canvasMap.fillRect(this.pointW*i, this.pointH*j, this.pointW, this.pointH);
 		}
 	}
+	this.makeEvent('rebuildMap');
 };
 
 JSDungeon.MAP.prototype.showShadow = function(){
@@ -267,7 +270,7 @@ JSDungeon.MAP.prototype._placeStart = function(){
 	this.canvasMap.fillStyle = '#ffffff';
 	this.canvasMap.fillRect(this.pointW*randx, this.pointH*randy, this.pointW, this.pointH);
 	this.start = [randx, randy];
-	this.MAP[randx][randy] = 'start';
+	this.MAP[randx][randy] = RPG.YOU;
 };
 
 JSDungeon.MAP.prototype._placeEnd = function(){
@@ -276,5 +279,5 @@ JSDungeon.MAP.prototype._placeEnd = function(){
 	this.canvasMap.fillStyle = '#0000cc';
 	this.canvasMap.fillRect(this.pointW*randx, this.pointH*randy, this.pointW, this.pointH);
 	this.end = [randx, randy];
-	this.MAP[randx][randy] = 'end';
+	this.MAP[randx][randy] = RPG.END;
 };

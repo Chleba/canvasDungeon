@@ -1,5 +1,5 @@
 /**
- * @constants
+ * discreet shadow casting algorithm with many thanks to Ondrej Zara <ondra.zarovi.cz>
  **/
 
 JSDungeon.ShadowLighting = JAK.ClassMaker.makeClass({
@@ -83,7 +83,7 @@ JSDungeon.ShadowLighting.prototype.getCoordsInCircle = function(center, radius, 
 };
 
 JSDungeon.ShadowLighting.prototype._blocks = function(c){
-	if(this.MAP[c[0]][c[1]] == 'lava'){
+	if(this.MAP[c[0]][c[1]] == RPG.WALL){
 		return true
 	}
 	return false;

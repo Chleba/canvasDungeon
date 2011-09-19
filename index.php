@@ -8,8 +8,9 @@
 	</head>
 	<body>
 	    <script type="text/javascript" src="./js/jak.js"></script>
+	    <script type="text/javascript" src="./js/timekeeper.js"></script>
 	    <script type="text/javascript" src="./js/dungeon.js"></script>
-	    <script type="text/javascript" src="./js/lightnings.js"></script>
+	    <script type="text/javascript" src="./js/util.js"></script>
 	    <script type="text/javascript" src="./js/map.js"></script>
 	    <script type="text/javascript" src="./js/shadowlighting.js"></script>
 	    <script type="text/javascript" src="./js/npc.js"></script>
