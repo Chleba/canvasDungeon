@@ -197,12 +197,23 @@ JSDungeon.Dungeon.prototype._move = function(e, elm){
 			this._attack(e);
 			break;
 		case 88 :
-		    this._lightning();
+		    if(e.shiftKey){
+		        this._circleLightning();
+		    } else {
+		    	this._lightning();
+		    }
 		    break;
 		default :
 			return;
 			break;
 	}
+};
+
+JSDungeon.Dungeon.prototype._circleLightning = function(){
+	this.map._rebuildMap();
+	var ss = this.opt.allMap ? this.start : this.map.smallStart;
+	var f = { x : ss[0]*this.map.pointW+(this.map.pointW/2), y : ss[1]*this.map.pointH+(this.map.pointW/2) };
+	var c = this.cUtil.makeCircleLight(f, this.map.pointW*3);
 };
 
 JSDungeon.Dungeon.prototype._lightning = function(){

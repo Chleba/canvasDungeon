@@ -8,7 +8,7 @@ JSDungeon.cUtil.prototype.$constructor = function(canvas, opt){
 	this.canvas = canvas;
 	this.color = '#666';
 	this.Lopt = {
-	    lwidth : 2,
+	    lwidth : 1,
 	    part : 5,
 	    color : '#0000cc',
 	    lastDist : 10
@@ -71,4 +71,16 @@ JSDungeon.cUtil.prototype.makeLight = function(f, t){
 	this.canvas.stroke();
 	this.canvas.closePath();
 	this.canvas.restore();
+};
+
+JSDungeon.cUtil.prototype.makeCircleLight = function(f, r){
+	var a = 0;
+	var tx = 0;
+	var ty = 0;
+	do{
+		tx = f.x + r * Math.cos(a);
+		ty = f.y + r * Math.sin(a);
+		this.makeLight(f, {x:tx, y:ty});
+		a += (Math.PI*6/100);
+	} while( a <= 6.1 );
 };
