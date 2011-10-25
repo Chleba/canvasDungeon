@@ -6,6 +6,7 @@ JSDungeon.MAP = JAK.ClassMaker.makeClass({
 });
 
 JSDungeon.MAP.prototype.$constructor = function(opt){
+	this.ec = [];
 	this.opt = {
 		mapElm : null,
 		canvas : null,
@@ -16,6 +17,7 @@ JSDungeon.MAP.prototype.$constructor = function(opt){
 	for(i in opt){
 		this.opt[i] = opt[i];
 	}
+	this.MAP = [];
 	this.dom = {};
 	this.dom.map = this.opt.mapElm;
 	this.canvasMap = this.opt.canvas;

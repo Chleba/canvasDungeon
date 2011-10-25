@@ -146,7 +146,12 @@ JSDungeon.ImageMap.prototype._smallRebuild = function(vis){
 			}
 			if(img){
 				var di = RPG.IMG[cons].img;
-				this.canvasMap.drawImage(di, this.pointW*ay, this.pointH*ax, this.pointW, this.pointH);
+				if(cons == RPG.YOU || cons == RPG.NPC){
+					this.canvasMap.drawImage(RPG.IMG[RPG.NONE].img, this.pointW*ay, this.pointH*ax, this.pointW, this.pointH);
+					this.canvasMap.drawImage(di, this.pointW*ay, this.pointH*ax);
+				} else {
+					this.canvasMap.drawImage(di, this.pointW*ay, this.pointH*ax, this.pointW, this.pointH);
+				}
 			} else {
 				this.canvasMap.fillStyle = color;
 				this.canvasMap.fillRect(this.pointW*ay, this.pointH*ax, this.pointW, this.pointH);

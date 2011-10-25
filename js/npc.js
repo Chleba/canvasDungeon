@@ -10,13 +10,11 @@ JSDungeon.NPC.prototype.$constructor = function(map){
 	this.HP = 10;
 	this.map = map;
 	this.interval = 500;
-	this.timekeeper = JAK.Timekeeper.getInstance();
 	this._makeNPC();
 };
 
 JSDungeon.NPC.prototype.$destructor = function(){
 	this.map.MAP[this.coords[0]][this.coords[1]] = RPG.NONE;
-	this.stopTicker();
 	this.DMG = null;
 	this.HP = null;
 	this.interval = null;
@@ -37,15 +35,6 @@ JSDungeon.NPC.prototype.stopTicker = function(){
 
 JSDungeon.NPC.prototype.setTicker = function(){
 	this.ticker = setInterval(this._move.bind(this), this.interval);
-	
-	if(this.map.opt.allMap){
-	    if(!this.rebuildTicker){
-		    try{
-				this.ticker = this.timekeeper.addListener(this.map, '_rebuildMap', 2);
-			} catch(e){ return; }
-		}
-	}
-	
 };
 
 JSDungeon.NPC.prototype._direction = function(){
@@ -116,9 +105,6 @@ JSDungeon.NPC.prototype._move = function(){
 	this.map.MAP[this.coords[0]][this.coords[1]] = RPG.NONE;
 	this.map.MAP[nc[0]][nc[1]] = RPG.NPC;
 	this.coords = nc;
-	if(isOnRange){
-		this.map._rebuildMap();
-	}
 };
 
 JSDungeon.NPC.prototype._attack = function(){

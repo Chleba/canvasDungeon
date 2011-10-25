@@ -13,6 +13,7 @@
 	    <script type="text/javascript" src="./js/util.js"></script>
 	    <script type="text/javascript" src="./js/map.js"></script>
 	    <script type="text/javascript" src="./js/shadowlighting.js"></script>
+	    <script type="text/javascript" src="./js/imagemap.js"></script>
 	    <script type="text/javascript" src="./js/npc.js"></script>
 		<style>
 			#canvasMain 	{ position:relative; height:450px; }

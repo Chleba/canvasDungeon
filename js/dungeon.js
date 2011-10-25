@@ -33,6 +33,42 @@ RPG.END = 4;
 
 RPG.HP = 500;
 
+RPG.IMG = {};
+RPG.IMG[RPG.NPC] = {
+	img : './img/man.png',
+	up : 96,
+	left : 32,
+	right : 64,
+	down : 0,
+	width : 30,
+	height : 32,
+	steps : 3,
+	interval : 400
+};
+RPG.IMG[RPG.YOU] = {
+	img : './img/capeman.png',
+	up : 96,
+	left : 32,
+	right : 64,
+	down : 0,
+	width : 30,
+	height : 32,
+	steps : 3,
+	interval : 400
+};
+RPG.IMG[RPG.WALL] = {
+	img : './img/wall.png',
+	width : 50,
+	height : 50,
+	steps : 0
+};
+RPG.IMG[RPG.NONE] = {
+	img : './img/none.png',
+	width : 50,
+	height : 50,
+	steps : 0
+}
+
 Array.prototype.min = function(){
 	return Math.min.apply(Math, this);
 };
@@ -48,7 +84,7 @@ JSDungeon.Dungeon = JAK.ClassMaker.makeClass({
 JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.opt = {
 		allMap : 0,
-		radius : 10
+		radius : 8
 	}
 	this.direction = RPG.E;
 	this.mapConst = 50;
@@ -58,9 +94,46 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.ec = [];
 	this.dom.map = JAK.gel(map);
 	this.canvasMap = this.dom.map.getContext('2d');
+	this.timekeeper = JAK.Timekeeper.getInstance();
 	this.cUtil = new JSDungeon.cUtil(this.canvasMap);
 	//this.map = new JSDungeon.MAP({
-	this.map = new JSDungeon.ShadowLighting({
+	//this.map = new JSDungeon.ShadowLighting({
+	this._imageLoad();
+	/*this.map = new JSDungeon.ImageMap({
+		mapElm : this.dom.map,
+		canvas : this.canvasMap,
+		radius : this.opt.radius,
+		mapConst : this.mapConst,
+		allMap : this.opt.allMap
+	});*/
+};
+
+JSDungeon.Dungeon.prototype.stopTicker = function(){
+	clearInterval(this.ticker);
+};
+
+JSDungeon.Dungeon.prototype.setTicker = function(){
+	try{
+		this.ticker = this.timekeeper.addListener(this.map, '_rebuildMap', 2);
+	} catch(e){ return; }
+};
+
+JSDungeon.Dungeon.prototype._imageLoad = function(){
+	for( i in RPG.IMG ){
+		if(!RPG.IMG[i].loaded){
+			var img = JAK.mel('img');
+			img.src = RPG.IMG[i].img;
+			RPG.IMG[i].loaded = 1;
+			RPG.IMG[i].img = img;
+			this.ec.push( JAK.Events.addListener(img, 'load', this, '_imageLoad') );
+			return;
+		}
+	}
+	this._imagesLoaded();
+};
+
+JSDungeon.Dungeon.prototype._imagesLoaded = function(){
+	this.map = new JSDungeon.ImageMap({
 		mapElm : this.dom.map,
 		canvas : this.canvasMap,
 		radius : this.opt.radius,
@@ -81,8 +154,10 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 	];
 	this.MAP = this.map.getMap();
 	this.makeHPBar();
+	this.setTicker();
 	this._link();
 };
+
 JSDungeon.Dungeon.prototype._finder = function(ns){
 	if((ns[0] >= 0 || ns[0] < this.mapConst) && (ns[1] >= 0 || ns[1] < this.mapConst)){
 		switch(this.MAP[ns[0]][ns[1]]){
@@ -108,7 +183,6 @@ JSDungeon.Dungeon.prototype._moveUp = function(e){
 		this.MAP[this.start[0]][this.start[1]] = RPG.NONE;
 		this.start[1] = this.start[1] == 0 ? this.start[1] : this.start[1]-1;
 		this.MAP[this.start[0]][this.start[1]] = RPG.YOU;
-		this.map._rebuildMap();
 	}
 };
 JSDungeon.Dungeon.prototype._moveDown = function(e){
@@ -120,7 +194,6 @@ JSDungeon.Dungeon.prototype._moveDown = function(e){
 		this.MAP[this.start[0]][this.start[1]] = RPG.NONE;
 		this.start[1] = this.start[1] == this.MAP[0].length-1 ? this.start[1] : this.start[1]+1;
 		this.MAP[this.start[0]][this.start[1]] = RPG.YOU;
-		this.map._rebuildMap();
 	}
 };
 JSDungeon.Dungeon.prototype._moveRight = function(e){
@@ -132,7 +205,6 @@ JSDungeon.Dungeon.prototype._moveRight = function(e){
 		this.MAP[this.start[0]][this.start[1]] = RPG.NONE;
 		this.start[0] = this.start[0] == this.MAP.length-1 ? this.start[0] : this.start[0]+1;
 		this.MAP[this.start[0]][this.start[1]] = RPG.YOU;
-		this.map._rebuildMap();
 	}
 };
 JSDungeon.Dungeon.prototype._moveLeft = function(e){
@@ -144,7 +216,6 @@ JSDungeon.Dungeon.prototype._moveLeft = function(e){
 		this.MAP[this.start[0]][this.start[1]] = RPG.NONE;
 		this.start[0] = this.start[0] == 0 ? this.start[0] : this.start[0]-1;
 		this.MAP[this.start[0]][this.start[1]] = RPG.YOU;
-		this.map._rebuildMap();
 	}
 };
 JSDungeon.Dungeon.prototype._attack = function(e){
@@ -210,14 +281,12 @@ JSDungeon.Dungeon.prototype._move = function(e, elm){
 };
 
 JSDungeon.Dungeon.prototype._circleLightning = function(){
-	this.map._rebuildMap();
 	var ss = this.opt.allMap ? this.start : this.map.smallStart;
 	var f = { x : ss[0]*this.map.pointW+(this.map.pointW/2), y : ss[1]*this.map.pointH+(this.map.pointW/2) };
 	var c = this.cUtil.makeCircleLight(f, this.map.pointW*3);
 };
 
 JSDungeon.Dungeon.prototype._lightning = function(){
-	this.map._rebuildMap();
 	var td = RPG.DIR[this.direction];
 	var ss = this.opt.allMap ? this.start : this.map.smallStart;
 	var t = { x : ((ss[0]+(td[0]*4))*this.map.pointW), y : ((ss[1]+(td[1]*4))*this.map.pointH) };
