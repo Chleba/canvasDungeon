@@ -84,3 +84,40 @@ JSDungeon.cUtil.prototype.makeCircleLight = function(f, r){
 		a += (Math.PI*6/100);
 	} while( a <= 6.1 );
 };
+
+/**
+ * sprite animation
+ */
+JSDungeon.Sprite = JAK.ClassMaker.makeClass({
+	NAME : 'JSDungeon.Sprite',
+	VERSION : '1.0'
+});
+
+JSDungeon.Sprite.prototype.$constructor = function(canvas, img, opt){
+	this.opt = opt || {};
+	this.dom = {};
+	this.dom.canvas = JAK.gel(canvas);
+	this.canvas = this.dom.canvas.getContext('2d');
+	this.img = JAK.mel('img', { src : img });
+	this.interval = this.opt.interval;
+	this.step = this.interval/this.opt.steps;
+	this.stepw = this.opt.step;
+	this.direction = 'right';
+	this.time = new Date().getTime()+this.interval;
+	this.timekeeper = JAK.Timekeeper.getInstance();
+	this.tick = this.timekeeper.addListener(this, '_anim', 2);
+};
+
+JSDungeon.Sprite.prototype._anim = function(){
+	var dt = new Date().getTime();
+	if(this.time > dt){
+	    var sy = this.opt[this.direction].top;
+	    var height = this.opt[this.direction].height;
+	    this.canvas.clearRect(0, 0, 100, 100);
+	    var fl = this.interval - (this.time-dt);
+	    var step = Math.floor(fl/this.step);
+	    this.canvas.drawImage(this.img, step*this.stepw, sy, this.stepw, height, 0, 0, this.stepw, height);
+	} else {
+	    this.time = dt+this.interval;
+	}
+};

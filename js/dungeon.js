@@ -81,7 +81,7 @@ JSDungeon.Dungeon = JAK.ClassMaker.makeClass({
 	VERSION : '1.45',
 	IMPLEMENT : JAK.ISignals
 });
-JSDungeon.Dungeon.prototype.$constructor = function(map){
+JSDungeon.Dungeon.prototype.$constructor = function(map, place){
 	this.opt = {
 		allMap : 0,
 		radius : 8
@@ -93,7 +93,10 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 	this.dom = {};
 	this.ec = [];
 	this.dom.map = JAK.gel(map);
+	this.dom.place = JAK.gel(place);
+	this.dom.map.parentNode.appendChild(this.dom.place);
 	this.canvasMap = this.dom.map.getContext('2d');
+	this.canvasPlace = this.dom.place.getContext('2d');
 	this.timekeeper = JAK.Timekeeper.getInstance();
 	this.cUtil = new JSDungeon.cUtil(this.canvasMap);
 	//this.map = new JSDungeon.MAP({
@@ -109,7 +112,7 @@ JSDungeon.Dungeon.prototype.$constructor = function(map){
 };
 
 JSDungeon.Dungeon.prototype.stopTicker = function(){
-	clearInterval(this.ticker);
+	this.timekeeper.removeListener(this.ticker);
 };
 
 JSDungeon.Dungeon.prototype.setTicker = function(){
@@ -133,14 +136,18 @@ JSDungeon.Dungeon.prototype._imageLoad = function(){
 };
 
 JSDungeon.Dungeon.prototype._imagesLoaded = function(){
+	//this.map = new JSDungeon.MAP({
+	//this.map = new JSDungeon.ShadowLighting({
 	this.map = new JSDungeon.ImageMap({
+		dung : this,
 		mapElm : this.dom.map,
 		canvas : this.canvasMap,
+		place : this.canvasPlace,
 		radius : this.opt.radius,
 		mapConst : this.mapConst,
 		allMap : this.opt.allMap
 	});
-	this.npcs = [
+	/*this.npcs = [
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
@@ -151,7 +158,7 @@ JSDungeon.Dungeon.prototype._imagesLoaded = function(){
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map)
-	];
+	];*/
 	this.MAP = this.map.getMap();
 	this.makeHPBar();
 	this.setTicker();

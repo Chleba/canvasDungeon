@@ -21,8 +21,21 @@ JSDungeon.MAP.prototype.$constructor = function(opt){
 	this.dom = {};
 	this.dom.map = this.opt.mapElm;
 	this.canvasMap = this.opt.canvas;
+	this.canvasPlace = this.opt.place;
 	this.mapConst = this.opt.mapConst;
 	this.radius = this.opt.radius;
+	this.timekeeper = JAK.Timekeeper.getInstance();
+	/*- sprites options -*/
+	this.spriteOpt = {
+		step : 30,
+		steps : 3,
+		interval : 400,
+		time : new Date().getTime()+400
+	}
+	this.spriteOpt[RPG.N] = { top :96, height : 32 };
+	this.spriteOpt[RPG.W] = { top :32, height : 32 };
+	this.spriteOpt[RPG.E] = { top : 64, height : 32 };
+	this.spriteOpt[RPG.S] = { top : 0, height : 32 };
 	this._buildMap();
 };
 
@@ -64,8 +77,8 @@ JSDungeon.MAP.prototype._buildMap = function(){
 	this.MAP = [];
 	this.mapWidth = this.dom.map.offsetWidth;
 	this.mapHeight = this.dom.map.offsetHeight;
-	this.pointW = this.mapWidth/this.mapConst;
-	this.pointH = this.mapHeight/this.mapConst;
+	this.pointW = parseInt(this.mapWidth/this.mapConst);
+	this.pointH = parseInt(this.mapHeight/this.mapConst);
 	for(var i=0;i<this.mapConst;i++){
 		var row = [];
 		for(var j=0;j<this.mapConst;j++){
@@ -95,6 +108,7 @@ JSDungeon.MAP.prototype._clearMap = function(){
 	this.canvasMap.clearRect(0, 0, this.mapWidth, this.mapHeight);
 	this.canvasMap.fillStyle = '#000';
 	this.canvasMap.fillRect(0, 0, this.mapWidth, this.mapHeight)
+	this.canvasPlace.clearRect(0, 0, this.mapWidth, this.mapHeight);
 };
 
 JSDungeon.MAP.prototype._obsticlesFinder = function(coords){

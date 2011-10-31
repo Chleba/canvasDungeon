@@ -16,17 +16,18 @@
 	    <script type="text/javascript" src="./js/imagemap.js"></script>
 	    <script type="text/javascript" src="./js/npc.js"></script>
 		<style>
-			#canvasMain 	{ position:relative; height:450px; }
+			#canvasMain 	{ position:relative; height:600px; }
 			#canvasMain canvas	{ display:block; position:absolute; top:0px; left:0px; }
 		</style>
 		<div id="page">
 			<div id="canvasMain">
 				<canvas id="canvasMap" width="600" height="600"></canvas>
+				<canvas id="canvasPlace" width="600" height="600"></canvas>
 			</div>
 			<h2>Where is the blue dot ?</h2>
 			<p>(Move with arrows.)</p>
 			<script type="text/javascript">
-				var canvasDungeon = new JSDungeon.Dungeon('canvasMap');
+				var canvasDungeon = new JSDungeon.Dungeon('canvasMap', 'canvasPlace');
 			</script>			
 		</div>
 	</body>

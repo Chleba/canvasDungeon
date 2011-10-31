@@ -24,8 +24,8 @@ JSDungeon.ImageMap.prototype._obsticlesFinder = function(coords){
 JSDungeon.ImageMap.prototype._buildMap = function(){
 	this.mapWidth = this.dom.map.offsetWidth;
 	this.mapHeight = this.dom.map.offsetHeight;
-	this.pointW = this.mapWidth/this.mapConst;
-	this.pointH = this.mapHeight/this.mapConst;
+	this.pointW = parseInt(this.mapWidth/this.mapConst);
+	this.pointH = parseInt(this.mapHeight/this.mapConst);
 	for(var i=0;i<this.mapConst;i++){
 		var row = [];
 		for(var j=0;j<this.mapConst;j++){
@@ -98,6 +98,22 @@ JSDungeon.ImageMap.prototype._rebuildMap = function(){
 	this.makeEvent('rebuildMap');
 };
 
+JSDungeon.ImageMap.prototype._animateSprites = function(x, y){
+	x = parseInt(x);
+	y = parseInt(y);
+	var dt = new Date().getTime();
+	if(this.spriteOpt.time > dt){
+	    var sy = this.spriteOpt[this.opt.dung.direction].top;
+	    var height = this.spriteOpt[this.opt.dung.direction].height;
+	    var fl = this.spriteOpt.interval - (this.spriteOpt.time-dt);
+	    var step = Math.floor(fl/this.spriteOpt.step);	    
+	    var sx = step*this.spriteOpt.step;
+	    this.canvasMap.drawImage(RPG.IMG[RPG.YOU].img, sx, sy, this.spriteOpt.step, height, x, y, this.spriteOpt.step, height);
+	} else {
+	    this.spriteOpt.time = dt+this.spriteOpt.interval;
+	}
+};
+
 JSDungeon.ImageMap.prototype._smallRebuild = function(vis){
 	var a = (this.opt.radius*2)+1;
 	var middle = ((a-1)/2);
@@ -147,8 +163,11 @@ JSDungeon.ImageMap.prototype._smallRebuild = function(vis){
 			if(img){
 				var di = RPG.IMG[cons].img;
 				if(cons == RPG.YOU || cons == RPG.NPC){
+					this._animateSprites(this.pointW*ay, this.pointH*ax);
+					/*
 					this.canvasMap.drawImage(RPG.IMG[RPG.NONE].img, this.pointW*ay, this.pointH*ax, this.pointW, this.pointH);
 					this.canvasMap.drawImage(di, this.pointW*ay, this.pointH*ax);
+					*/
 				} else {
 					this.canvasMap.drawImage(di, this.pointW*ay, this.pointH*ax, this.pointW, this.pointH);
 				}
