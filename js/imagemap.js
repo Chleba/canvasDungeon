@@ -98,20 +98,15 @@ JSDungeon.ImageMap.prototype._rebuildMap = function(){
 	this.makeEvent('rebuildMap');
 };
 
-JSDungeon.ImageMap.prototype._animateSprites = function(x, y){
-	x = parseInt(x);
-	y = parseInt(y);
-	var dt = new Date().getTime();
-	if(this.spriteOpt.time > dt){
-	    var sy = this.spriteOpt[this.opt.dung.direction].top;
-	    var height = this.spriteOpt[this.opt.dung.direction].height;
-	    var fl = this.spriteOpt.interval - (this.spriteOpt.time-dt);
-	    var step = Math.floor(fl/this.spriteOpt.step);	    
-	    var sx = step*this.spriteOpt.step;
-	    this.canvasMap.drawImage(RPG.IMG[RPG.YOU].img, sx, sy, this.spriteOpt.step, height, x, y, this.spriteOpt.step, height);
-	} else {
-	    this.spriteOpt.time = dt+this.spriteOpt.interval;
-	}
+JSDungeon.ImageMap.prototype._animateSprites = function(x, y) {
+	var sy = this.spriteOpt[this.opt.dung.direction].top; /* vyskovy zacatek */
+	var height = this.spriteOpt[this.opt.dung.direction].height; /* vyska vyrezu */
+
+	var delta = new Date().getTime() - this.spriteOpt.start; /* jak dlouho uz bezi animace */
+	var index = Math.floor(delta / this.spriteOpt.interval) % 3;
+	var sx = index*this.spriteOpt.step; /* sirkovy zacatek zleva */
+	
+	this.canvasMap.drawImage(RPG.IMG[RPG.YOU].img, sx, sy, this.spriteOpt.step, height, x, y, this.spriteOpt.step, height);
 };
 
 JSDungeon.ImageMap.prototype._smallRebuild = function(vis){
@@ -163,6 +158,7 @@ JSDungeon.ImageMap.prototype._smallRebuild = function(vis){
 			if(img){
 				var di = RPG.IMG[cons].img;
 				if(cons == RPG.YOU || cons == RPG.NPC){
+					this.canvasMap.drawImage(RPG.IMG[RPG.NONE].img, this.pointW*ay, this.pointH*ax, this.pointW, this.pointH);
 					this._animateSprites(this.pointW*ay, this.pointH*ax);
 					/*
 					this.canvasMap.drawImage(RPG.IMG[RPG.NONE].img, this.pointW*ay, this.pointH*ax, this.pointW, this.pointH);

@@ -29,8 +29,8 @@ JSDungeon.MAP.prototype.$constructor = function(opt){
 	this.spriteOpt = {
 		step : 30,
 		steps : 3,
-		interval : 400,
-		time : new Date().getTime()+400
+		interval : 200, /* delka jedne casti spritu */
+		start : new Date().getTime() /* cas pocatku animace */
 	}
 	this.spriteOpt[RPG.N] = { top :96, height : 32 };
 	this.spriteOpt[RPG.W] = { top :32, height : 32 };
@@ -40,8 +40,8 @@ JSDungeon.MAP.prototype.$constructor = function(opt){
 };
 
 JSDungeon.MAP.prototype._fullscreen = function(){
-	this.pointW = this.mapWidth/((this.opt.radius*2)+1);
-	this.pointH = this.mapHeight/((this.opt.radius*2)+1);
+	this.pointW = parseInt(this.mapWidth/((this.opt.radius*2)+1));
+	this.pointH = parseInt(this.mapHeight/((this.opt.radius*2)+1));
 };
 
 JSDungeon.MAP.prototype.getStart = function(){
