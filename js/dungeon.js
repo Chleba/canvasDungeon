@@ -147,7 +147,7 @@ JSDungeon.Dungeon.prototype._imagesLoaded = function(){
 		mapConst : this.mapConst,
 		allMap : this.opt.allMap
 	});
-	/*this.npcs = [
+	this.npcs = [
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
@@ -158,7 +158,7 @@ JSDungeon.Dungeon.prototype._imagesLoaded = function(){
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map)
-	];*/
+	];
 	this.MAP = this.map.getMap();
 	this.makeHPBar();
 	this.setTicker();
