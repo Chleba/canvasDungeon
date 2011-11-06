@@ -296,9 +296,25 @@ JSDungeon.Dungeon.prototype._circleLightning = function(){
 JSDungeon.Dungeon.prototype._lightning = function(){
 	var td = RPG.DIR[this.direction];
 	var ss = this.opt.allMap ? this.start : this.map.smallStart;
-	var t = { x : ((ss[0]+(td[0]*4))*this.map.pointW), y : ((ss[1]+(td[1]*4))*this.map.pointH) };
-	var f = { x : ss[0]*this.map.pointW, y : ss[1]*this.map.pointH };
-	var l = this.cUtil.makeLight(f, t);
+	var t = { x : ((ss[0]+(td[0]*4))*this.map.pointW), y : ((ss[1]+(td[1]*4))*this.map.pointH)+(this.map.pointH/2) };
+	var f = { x : (ss[0]*this.map.pointW)+(this.map.pointW/2), y : (ss[1]*this.map.pointH)+(this.map.pointH/2) };
+	this.castStart = new Date().getTime()+400;
+	if(!this.castTick){
+		this.castTick = this.timekeeper.addListener(this, this._castLight.bind(this, f, t), 2);
+	}
+	//var l = this._castLight(f, t);
+};
+
+JSDungeon.Dungeon.prototype._castLight = function(f, t){
+	var delta = new Date().getTime() - this.castStart;
+	if(delta < 0){
+		for(var i=0;i<3;i++){
+			this.cUtil.makeLight(f, t);
+		}
+	} else {
+		try{ this.timekeeper.removeListener(this); } catch (e) { return; }
+		this.castTick = 0;
+	}
 };
 
 JSDungeon.Dungeon.prototype._dmg = function(e){
