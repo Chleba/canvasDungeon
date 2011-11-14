@@ -150,6 +150,10 @@ JSDungeon.ImageMap.prototype._smallRebuild = function(vis){
 					case RPG.END :
 						color = '#0000cc'; 
 						break;
+					case RPG.BLOOD :
+						if(RPG.IMG[RPG.BLOOD]){ img = 1; }
+						color = '#A30000';
+						break;
 					default : 
 						return; 
 						break;
@@ -166,6 +170,9 @@ JSDungeon.ImageMap.prototype._smallRebuild = function(vis){
 					this.canvasMap.drawImage(di, this.pointW*ay, this.pointH*ax);
 					*/
 				} else {
+					if(cons == RPG.BLOOD){
+						this.canvasMap.drawImage(RPG.IMG[RPG.NONE].img, this.pointW*ay, this.pointH*ax, this.pointW, this.pointH);
+					}
 					this.canvasMap.drawImage(di, this.pointW*ay, this.pointH*ax, this.pointW, this.pointH);
 				}
 			} else {

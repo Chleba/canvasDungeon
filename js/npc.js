@@ -15,7 +15,7 @@ JSDungeon.NPC.prototype.$constructor = function(map){
 
 JSDungeon.NPC.prototype.$destructor = function(){
 	this.stopTicker();
-	this.map.MAP[this.coords[0]][this.coords[1]] = RPG.NONE;
+	this.map.MAP[this.coords[0]][this.coords[1]] = RPG.BLOOD;
 	this.DMG = null;
 	this.HP = null;
 	this.map = null;
@@ -37,6 +37,7 @@ JSDungeon.NPC.prototype.getDmg = function(dmg){
 };
 
 JSDungeon.NPC.prototype._die = function(){
+	//this.map.MAP[this.coords[0]][this.coords[1]] = RPG.BLOOD;
 	this.$destructor();
 };
 

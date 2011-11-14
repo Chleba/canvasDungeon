@@ -30,6 +30,7 @@ RPG.NPC = 1;
 RPG.WALL = 2;
 RPG.YOU = 3;
 RPG.END = 4;
+RPG.BLOOD = 5;
 
 RPG.HP = 500;
 
@@ -70,7 +71,13 @@ RPG.IMG[RPG.NONE] = {
 	width : 64,
 	height : 64,
 	steps : 0
-}
+};
+RPG.IMG[RPG.BLOOD] = {
+	img : './img/blood1.png',
+	width : 125,
+	height : 125,
+	steps : 0
+};
 
 Array.prototype.min = function(){
 	return Math.min.apply(Math, this);
@@ -172,6 +179,7 @@ JSDungeon.Dungeon.prototype._finder = function(ns){
 	if((ns[0] >= 0 || ns[0] < this.mapConst) && (ns[1] >= 0 || ns[1] < this.mapConst)){
 		switch(this.MAP[ns[0]][ns[1]]){
 			case RPG.NONE : return 1; break;
+			case RPG.BLOOD : return 1; break;
 			case RPG.WALL : return 0; break;
 			case RPG.END : this._win(); break;
 			default : return; break;
