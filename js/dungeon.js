@@ -60,15 +60,15 @@ RPG.IMG[RPG.YOU] = {
 	interval : 400
 };
 RPG.IMG[RPG.WALL] = {
-	img : './img/wall.png',
-	width : 50,
-	height : 50,
+	img : './img/t-grass-stump.png',
+	width : 64,
+	height : 64,
 	steps : 0
 };
 RPG.IMG[RPG.NONE] = {
-	img : './img/none.png',
-	width : 50,
-	height : 50,
+	img : './img/t-grass.png',
+	width : 64,
+	height : 64,
 	steps : 0
 }
 
