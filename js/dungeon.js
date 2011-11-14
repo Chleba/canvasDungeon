@@ -33,6 +33,9 @@ RPG.END = 4;
 
 RPG.HP = 500;
 
+RPG.SPELL = {}
+RPG.SPELL.L = 10;
+
 RPG.IMG = {};
 RPG.IMG[RPG.NPC] = {
 	img : './img/man.png',
@@ -299,10 +302,35 @@ JSDungeon.Dungeon.prototype._lightning = function(){
 	var t = { x : ((ss[0]+(td[0]*4))*this.map.pointW), y : ((ss[1]+(td[1]*4))*this.map.pointH)+(this.map.pointH/2) };
 	var f = { x : (ss[0]*this.map.pointW)+(this.map.pointW/2), y : (ss[1]*this.map.pointH)+(this.map.pointH/2) };
 	this.castStart = new Date().getTime()+400;
+	
+	var enemyOnPath = this._lightEnemyOnPath(ss, td);
+	
 	if(!this.castTick){
 		this.castTick = this.timekeeper.addListener(this, this._castLight.bind(this, f, t), 2);
 	}
 	//var l = this._castLight(f, t);
+};
+
+JSDungeon.Dungeon.prototype._lightEnemyOnPath = function(ss, d){
+	var npc = 0;
+	for(var i=0;i<4;i++){
+		var coords = [this.start[0]+(d[0]*i), this.start[1]+(d[1]*i)];
+		if(this.MAP[coords[0]][coords[1]] == RPG.NPC){
+			var npc = this._getNPC(coords);
+		}
+	}
+	if(npc){
+		npc.getDmg(RPG.SPELL.L);
+	}
+};
+
+JSDungeon.Dungeon.prototype._getNPC = function(coords){
+	for(var i=0;i<this.npcs.length;i++){
+		if(this.npcs[i].hasCoords(coords)){
+			return this.npcs[i];
+		}
+	}
+	return 0;
 };
 
 JSDungeon.Dungeon.prototype._castLight = function(f, t){

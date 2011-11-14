@@ -14,10 +14,30 @@ JSDungeon.NPC.prototype.$constructor = function(map){
 };
 
 JSDungeon.NPC.prototype.$destructor = function(){
+	this.stopTicker();
 	this.map.MAP[this.coords[0]][this.coords[1]] = RPG.NONE;
 	this.DMG = null;
 	this.HP = null;
+	this.map = null;
 	this.interval = null;
+};
+
+JSDungeon.NPC.prototype.hasCoords = function(coords){
+	if(String(this.coords) == String(coords)){
+		return this;
+	}
+	return 0;
+};
+
+JSDungeon.NPC.prototype.getDmg = function(dmg){
+	this.HP -= dmg;
+	if(this.HP <= 0){
+		this._die();
+	}
+};
+
+JSDungeon.NPC.prototype._die = function(){
+	this.$destructor();
 };
 
 JSDungeon.NPC.prototype._makeNPC = function(){
