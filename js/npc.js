@@ -33,11 +33,12 @@ JSDungeon.NPC.prototype.getDmg = function(dmg){
 	this.HP -= dmg;
 	if(this.HP <= 0){
 		this._die();
+		return 1;
 	}
+	return 0;
 };
 
 JSDungeon.NPC.prototype._die = function(){
-	//this.map.MAP[this.coords[0]][this.coords[1]] = RPG.BLOOD;
 	this.$destructor();
 };
 

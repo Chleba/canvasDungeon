@@ -1,6 +1,6 @@
 /**
  * Simple canvas dungeon game with discreet shadow casting algorithm with many thanks to Ondrej Zara <ondra.zarovi.cz>
- * Made by cHLeB@ <chleba@chleba.org>
+ * Made by cHLeB@ <chlebik@gmail.org>
  */
 var JSDungeon = {};
 
@@ -167,6 +167,29 @@ JSDungeon.Dungeon.prototype._imagesLoaded = function(){
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
+		new JSDungeon.NPC(this.map),
 		new JSDungeon.NPC(this.map)
 	];
 	this.MAP = this.map.getMap();
@@ -311,25 +334,58 @@ JSDungeon.Dungeon.prototype._lightning = function(){
 	var f = { x : (ss[0]*this.map.pointW)+(this.map.pointW/2), y : (ss[1]*this.map.pointH)+(this.map.pointH/2) };
 	this.castStart = new Date().getTime()+400;
 	
-	var enemyOnPath = this._lightEnemyOnPath(ss, td);
-	
 	if(!this.castTick){
+		var enemyOnPath = this._lightEnemyOnPath(ss, td);
+		if(enemyOnPath){
+			var t = { x : (enemyOnPath.small[0]*this.map.pointW), y : (enemyOnPath.small[1]*this.map.pointH)+(this.map.pointH/2) };
+			var an = this._getNearNpc(enemyOnPath);
+		}
 		this.castTick = this.timekeeper.addListener(this, this._castLight.bind(this, f, t), 2);
 	}
 	//var l = this._castLight(f, t);
 };
 
+JSDungeon.Dungeon.prototype._getNearNpc = function(coords){
+	for(var i=0;i<this.npcs.length;i++){
+		if(this.npcs[i].coords.toString() != coords.all.toString()){
+			var a = (this.npcs[i].coords[0]-coords.all[0]);
+			var b = (this.npcs[i].coords[1]-coords.all[1]);
+			var c = Math.sqrt((a*a)+(b*b));
+			if(c < 4){
+				
+				//var t = { x : ((coords.small[0]+(td[0]*4))*this.map.pointW), y : ((ss[1]+(td[1]*4))*this.map.pointH)+(this.map.pointH/2) };
+				//var f = { x : (coords.small[0]*this.map.pointW)+(this.map.pointW/2), y : (coords.small[1]*this.map.pointH)+(this.map.pointH/2) };
+				
+				//this.castTick = this.timekeeper.addListener(this, this._castLight.bind(this, f, t), 2);
+				this.npcs[i].getDmg(RPG.SPELL.L);
+				//console.log(this.npcs[i]);
+				break;
+			}
+		}
+	}
+};
+
 JSDungeon.Dungeon.prototype._lightEnemyOnPath = function(ss, d){
 	var npc = 0;
+	var c = 0;
 	for(var i=0;i<4;i++){
 		var coords = [this.start[0]+(d[0]*i), this.start[1]+(d[1]*i)];
 		if(this.MAP[coords[0]][coords[1]] == RPG.NPC){
 			var npc = this._getNPC(coords);
+			//if(npc){ var c = [this.map.smallStart[0]+(d[0]*i), this.map.smallStart[1]+(d[1]*i)]; }
+			if(npc){ var c = { all : [this.start[0]+(d[0]*i), this.start[1]+(d[1]*i)], small : [this.map.smallStart[0]+(d[0]*i), this.map.smallStart[1]+(d[1]*i)] }; }
 		}
 	}
 	if(npc){
-		npc.getDmg(RPG.SPELL.L);
+		var dead = npc.getDmg(RPG.SPELL.L);
+		if(dead){
+			var indexNpc = this.npcs.indexOf(npc);
+			if(indexNpc > -1){
+				this.npcs.splice(indexNpc, 1);
+			}
+		}
 	}
+	return c;
 };
 
 JSDungeon.Dungeon.prototype._getNPC = function(coords){
