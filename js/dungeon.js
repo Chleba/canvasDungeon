@@ -91,6 +91,7 @@ JSDungeon.Dungeon = JAK.ClassMaker.makeClass({
 	VERSION : '1.45',
 	IMPLEMENT : JAK.ISignals
 });
+
 JSDungeon.Dungeon.prototype.$constructor = function(map, place){
 	this.opt = {
 		allMap : 0,
@@ -112,6 +113,17 @@ JSDungeon.Dungeon.prototype.$constructor = function(map, place){
 	//this.map = new JSDungeon.MAP({
 	//this.map = new JSDungeon.ShadowLighting({
 	this._imageLoad();
+	
+	/*- websockets -*/
+	if(window['MozWebSocket']){
+		this.wsG = new MozWebSocket('ws://chleba.org:8000');
+	} else {
+		this.wsG = new WebSocket('ws://chleba.org:8000');
+	}
+	window.wsg = this.wsG;
+	this.wsG.onopen = this._socketOpen.bind(this);
+	
+	
 	/*this.map = new JSDungeon.ImageMap({
 		mapElm : this.dom.map,
 		canvas : this.canvasMap,
@@ -319,6 +331,11 @@ JSDungeon.Dungeon.prototype._move = function(e, elm){
 			return;
 			break;
 	}
+	if(this.wsG){
+		var obj = {};
+		obj.coords = this.start;
+		this.wsG.send(JSON.stringify(obj));
+	}
 };
 
 JSDungeon.Dungeon.prototype._circleLightning = function(){
@@ -422,9 +439,44 @@ JSDungeon.Dungeon.prototype.makeHPBar = function(){
 	this.canvasMap.fillRect( this.map.mapWidth-105, this.map.mapHeight-23, hp, 18 );
 }
 
+JSDungeon.Dungeon.prototype._socketOpen = function(e){
+	var obj = {};
+	obj.map = this.MAP;
+	obj.hasMap = JSDungeon.Dungeon.SERVERMAP;
+	obj.coords = this.map.start;
+	try{
+		this.wsG.send(JSON.stringify(obj));
+	} catch(e){ console.log(e); }
+};
+
+JSDungeon.Dungeon.prototype._socketMessage = function(e){
+	var data = JSON.parse(e.data);
+	if(data.map && data.map.length > 0 && !JSDungeon.Dungeon.SERVERMAP){
+		JSDungeon.Dungeon.SERVERMAP = 1;
+	}
+	this.MAP = data.map;
+};
+
+JSDungeon.Dungeon.prototype._socketClose = function(){
+	console.log('close socket');
+};
+
+JSDungeon.Dungeon.SERVERMAP = 0;
+
 JSDungeon.Dungeon.prototype._link = function(){
 	this.ec.push( JAK.Events.addListener( window, 'keydown', this, '_move' ) );
 	this.ec.push( JAK.Events.addListener( window, 'keyup', this, '_doneAttack' ) );
 	this.addListener('npcAttack', '_dmg');
 	this.addListener('rebuildMap', 'makeHPBar');
+		/*-
+	this.wsG.onopen = function(wsG, map){
+		console.log(wsG);
+		wsG.send(JSON.stringify(map));
+	}-*/
+	//this.wsG.onmessage = this._socketMessage();
+	this.wsG.onmessage = this._socketMessage.bind(this);
+	this.wsG.onclose = function(e){
+		console.log('close');
+	}
+	
 };
