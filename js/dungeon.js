@@ -91,6 +91,7 @@ JSDungeon.Dungeon = JAK.ClassMaker.makeClass({
 	VERSION : '1.45',
 	IMPLEMENT : JAK.ISignals
 });
+
 JSDungeon.Dungeon.prototype.$constructor = function(map, place){
 	this.opt = {
 		allMap : 0,
@@ -112,6 +113,15 @@ JSDungeon.Dungeon.prototype.$constructor = function(map, place){
 	//this.map = new JSDungeon.MAP({
 	//this.map = new JSDungeon.ShadowLighting({
 	this._imageLoad();
+	
+	/*- websockets -*/
+	if(window['MozWebSocket']){
+		this.wsG = new MozWebSocket('ws://chleba.org:8000');
+	} else {
+		this.wsG = new WebSocket('ws://chleba.org:8000');
+	}
+	
+	
 	/*this.map = new JSDungeon.ImageMap({
 		mapElm : this.dom.map,
 		canvas : this.canvasMap,
@@ -422,9 +432,20 @@ JSDungeon.Dungeon.prototype.makeHPBar = function(){
 	this.canvasMap.fillRect( this.map.mapWidth-105, this.map.mapHeight-23, hp, 18 );
 }
 
+JSDungeon.Dungeon.prototype._socketOpen = function(e){
+	console.log(this.MAP);
+	//this.wsG.send(this.MAP);
+};
+
 JSDungeon.Dungeon.prototype._link = function(){
 	this.ec.push( JAK.Events.addListener( window, 'keydown', this, '_move' ) );
 	this.ec.push( JAK.Events.addListener( window, 'keyup', this, '_doneAttack' ) );
 	this.addListener('npcAttack', '_dmg');
 	this.addListener('rebuildMap', 'makeHPBar');
+	
+	/*- websockets -*/
+	this.wsG.onopen = this._socketOpen();
+	this.wsG.onmessage = this._socketMessage();
+	this.wsG.onclose = this._socketClose();
+	
 };
